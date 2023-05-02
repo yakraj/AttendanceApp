@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {Children} from 'react';
 import Styled, {useTheme} from 'styled-components/native';
-import {ViewStyle} from 'react-native';
-
+import {ViewStyle, Image, ImageSourcePropType} from 'react-native';
 import {TouchableNativeFeedback} from 'react-native';
 import type {PropsWithChildren} from 'react';
+import {Neomorph} from 'react-native-neomorph-shadows';
 type Variants = {
   border: string;
   jus: string;
@@ -109,6 +109,7 @@ ${MxHeight && `max-height : ${MxHeight}`};
 ${display && `display : ${display}`};
 ${transform && `transform : ${transform}`};
 
+
 `;
 };
 interface CusViewProps {
@@ -152,10 +153,11 @@ type CompProps = PropsWithChildren<{
   MxHeight?: string;
   display?: string;
   transform?: string;
-  onpress?: string;
+  onpress?: () => void;
   touchable?: boolean;
   tofl?: boolean;
   tblC: string;
+  style?: object;
 }>;
 export const CustView = ({
   border,
@@ -191,11 +193,12 @@ export const CustView = ({
   MxHeight,
   display,
   transform,
-  onpress,
   touchable,
   tofl,
   tblC,
+  style,
   children,
+  onpress,
 }: CompProps) => {
   const variant = getVariant({
     border: border,
@@ -232,16 +235,23 @@ export const CustView = ({
     display: display,
     transform: transform,
   });
-
+  const handlePress = () => {
+    if (onClick) {
+      onClick();
+    }
+  };
   // return <></>;
   return touchable ? (
     <TouchableNativeFeedback
-      // onPress={onpress}
+      onPress={onpress}
+      style={style}
       background={TouchableNativeFeedback.Ripple(tblC, tofl ? true : false)}>
       <CusView variant={variant}>{children}</CusView>
     </TouchableNativeFeedback>
   ) : (
-    <CusView variant={variant}>{children}</CusView>
+    <CusView style={style} variant={variant}>
+      {children}
+    </CusView>
   );
 };
 
@@ -249,4 +259,73 @@ CustView.defaultProps = {
   jus: 'flex-start',
   ali: 'center',
   tblC: 'grey',
+};
+type NMorphProps = PropsWithChildren<{
+  height?: number;
+  width?: string;
+  borR: number;
+  TC?: string;
+  BC?: string;
+  bcC?: string;
+  jus?: string;
+  ali?: string;
+  inn?: boolean;
+}>;
+/* eslint-disable deprecation/deprecation */
+export const NMorph = ({
+  children,
+  height,
+  width,
+  borR,
+  BC,
+  TC,
+  bcC,
+  inn,
+  jus,
+  ali,
+}: NMorphProps) => {
+  return (
+    <Neomorph
+      inner={inn ?? false} // specify the inner property
+      darkShadowColor={BC ?? '#000'}
+      lightShadowColor={TC ?? '#fff'}
+      style={{
+        shadowOpacity: 0.6,
+        shadowRadius: 10,
+        backgroundColor: bcC ?? '#ECF0F3',
+        width: width ?? 100,
+        height: height ?? 100,
+        borderRadius: borR,
+        justifyContent: jus ?? 'center',
+        alignItems: ali ?? 'center',
+      }}>
+      {children}
+    </Neomorph>
+  );
+};
+
+type Props = {
+  source: ImageSourcePropType;
+  style?: object;
+  resizeMode?: 'cover' | 'contain' | 'stretch' | 'repeat' | 'center';
+  accessibilityLabel?: string;
+  testID?: string;
+};
+
+export const MyImage = ({
+  source,
+  style,
+  resizeMode,
+  accessibilityLabel,
+  testID,
+}: Props) => {
+  return (
+    <Image
+      source={source}
+      style={style}
+      resizeMode={resizeMode}
+      accessibilityLabel={accessibilityLabel}
+      testID={testID}
+    />
+  );
 };
