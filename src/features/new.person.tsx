@@ -49,7 +49,7 @@ export const AddPerson = () => {
         <TextArea title="Salary/Hour" />
         <TextArea title="Extra Charges" />
         {/* this is pf and esic section */}
-        <CustView fdr="row" height="120px" borR={15} ofl="hidden" width="90%">
+        <CustView fdr="row" height="120px" borR={15} ofl="hidden" width="90%"> 
           <LinearGradient
             style={{
               height: '100%',
