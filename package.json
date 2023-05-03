@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "react-native run-android",
+    "star": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
-    "star": "react-native start",
+    "start": "react-native start",
     "test": "jest"
   },
   "dependencies": {
