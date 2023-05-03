@@ -70,7 +70,14 @@ export const AllData = () => {
       <Topbar title="All Data" />
       {/* from here th year data starts */}
       <CustView>
-        <ScrollView horizontal>
+        <ScrollView
+          style={{
+            marginTop: 20,
+            paddingBottom: 10,
+            borderBottomColor: 'grey',
+            borderBottomWidth: 1,
+          }}
+          horizontal>
           <YearScroll />
           <YearScroll />
           <YearScroll />

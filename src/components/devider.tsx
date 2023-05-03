@@ -293,7 +293,7 @@ export const NMorph = ({
         shadowOpacity: 0.6,
         shadowRadius: 10,
         backgroundColor: bcC ?? '#ECF0F3',
-        width: width ?? 100,
+        width: '100%',
         height: height ?? 100,
         borderRadius: borR,
         justifyContent: jus ?? 'center',

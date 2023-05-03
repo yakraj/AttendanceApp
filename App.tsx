@@ -8,7 +8,7 @@ type CustBR = {
   data: string;
   unatt?: string;
 };
-const BackgroundRect = ({title, data, unatt}: CustBR) => {
+export const BackgroundRect = ({title, data, unatt}: CustBR) => {
   return (
     <>
       <ImageBackground

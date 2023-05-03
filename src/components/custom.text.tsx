@@ -9,6 +9,7 @@ interface CustomTextProps extends TextProps {
   top: number;
   left: string;
   right: number;
+  marB: number;
   position: string;
   weight?: 'normal' | 'bold';
   color?: string;
@@ -47,6 +48,7 @@ const CusT = styled.Text<CustomTextProps>`
   ${({marL}) => marL && `margin-left: ${marL}px`};
   ${({marT}) => marT && `margin-top: ${marT}px`};
   ${({marR}) => marR && `margin-right: ${marR}px`};
+  ${({marB}) => marB && `margin-bottom: ${marB}px`};
   ${({weight}) => weight && `font-weight: ${weight}`};
   ${({color}) => color && `color: ${color}`};
   ${({textAlign}) => textAlign && `text-align: ${textAlign}`};
