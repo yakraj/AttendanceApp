@@ -2,7 +2,7 @@ import React, {createContext, useState} from 'react';
 
 // Create the context object
 export const MainContext = createContext(null);
-
+//
 // Create the provider component
 export const MainProvider = ({children}) => {
   // Set the context value using an object
