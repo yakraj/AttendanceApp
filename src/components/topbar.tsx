@@ -47,7 +47,12 @@ export const Topbar = ({title, tableData}: Props) => {
           </LinearGradient>
         </CustView>
         {tableData && (
-          <CustView touchable tofl={true} tblC="#5CFFEB" height="auto">
+          <CustView
+            onpress={() => navigation.navigate('table')}
+            touchable
+            tofl={true}
+            tblC="#5CFFEB"
+            height="auto">
             <MyImage
               style={{height: 50, width: 50}}
               source={require('../../assects/topbartable.png')}

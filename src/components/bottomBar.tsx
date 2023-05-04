@@ -34,6 +34,9 @@ export const BottomBar = ({navigation}: Props) => {
         }}
         source={require('../../assects/navbar.png')}>
         <CustView
+          onpress={() => {
+            navigation.navigate('table');
+          }}
           marL={20}
           tblC="blue"
           marT={5}

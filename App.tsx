@@ -1,14 +1,17 @@
 import {BottomBar} from './src/components/bottomBar';
-import React from 'react';
+import React, {useContext} from 'react';
 import {CustView, MyImage, NMorph} from './src/components/devider';
 import {ImageBackground} from 'react-native';
 import CusT from './src/components/custom.text';
+import {MainContext} from './src/services/main.context';
+import {useFocusEffect} from '@react-navigation/native';
 type CustBR = {
   title: string;
   data: string;
   unatt?: string;
+  pass?: boolean;
 };
-export const BackgroundRect = ({title, data, unatt}: CustBR) => {
+export const BackgroundRect = ({title, data, unatt, pass}: CustBR) => {
   return (
     <>
       <ImageBackground
@@ -32,6 +35,11 @@ export const BackgroundRect = ({title, data, unatt}: CustBR) => {
                 Days
               </CusT>
             )}
+            {pass && (
+              <CusT size={10} color="red" textAlign="right" weight="bold">
+                Hours
+              </CusT>
+            )}
           </CustView>
         </CustView>
       </ImageBackground>
@@ -40,6 +48,21 @@ export const BackgroundRect = ({title, data, unatt}: CustBR) => {
 };
 
 function App({navigation}): JSX.Element {
+  const {ActiveUser, tableData, userData} = useContext(MainContext);
+  const [User, setUser] = React.useState<any>([]);
+  const [UserWork, setUserWork] = React.useState<any>([]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // find all objects inside tableData array where userId is ActiveUser
+      const find = tableData.filter(id => id.userId === ActiveUser);
+      setUserWork(find);
+      // find activeuse in userData array
+      const User = userData.filter(id => id.userId === ActiveUser);
+      setUser(User);
+    }, [tableData, userData]),
+  );
+
   return (
     <CustView padT={20} bcC="#D9D9D9" height="100%">
       <CustView height="auto" width="100%">
@@ -56,7 +79,7 @@ function App({navigation}): JSX.Element {
             source={require('./assects/avatar.png')}
           />
           <CusT size={30} weight="bold" color="#fff">
-            Yakraj
+            {User[0] && User[0].name.substring(0, 6)}
           </CusT>
         </CustView>
       </CustView>
@@ -67,10 +90,28 @@ function App({navigation}): JSX.Element {
         jus="space-around"
         display="flex"
         fdr="row">
-        <BackgroundRect title="Hours" data="246" />
-        <BackgroundRect title="Days" data="20" />
-        <BackgroundRect title="Pass" data="4" />
-        <BackgroundRect unatt="10" title="UnAtt" data="5" />
+        <BackgroundRect
+          title="Hours"
+          data={UserWork.reduce((acc, curr) => {
+            return acc + curr.totalHours;
+          }, 0)}
+        />
+        <BackgroundRect
+          title="Days"
+          data={UserWork.filter(day => day.totalHours > 4).length}
+        />
+        <BackgroundRect
+          title="Pass"
+          pass
+          data={UserWork.reduce((acc, curr) => {
+            return acc + curr.leaveTime;
+          }, 0)}
+        />
+        <BackgroundRect
+          unatt="10"
+          title="UnAtt"
+          data={UserWork.filter(day => day.totalHours === 0).length}
+        />
       </CustView>
       {/* this is for salary */}
       <ImageBackground
@@ -92,7 +133,10 @@ function App({navigation}): JSX.Element {
           <CustView fdr="row" ali="flex-start">
             <MyImage source={require('./assects/rs.png')} />
             <CusT size={60} weight="bold" color="grey">
-              24,000
+              {User[0] &&
+                UserWork.reduce((acc, curr) => {
+                  return acc + curr.totalHours;
+                }, 0) * User[0].salph}
             </CusT>
           </CustView>
           <CustView fdr="row">
@@ -101,7 +145,12 @@ function App({navigation}): JSX.Element {
             </CusT>
             <CusT size={15} color="grey">
               {'   Rs. '}
-              2500
+              {User[0] &&
+                (UserWork.filter(day => day.totalHours > 4).length *
+                  8 *
+                  User[0].salph *
+                  User[0].pf) /
+                  100}
             </CusT>
           </CustView>
         </CustView>

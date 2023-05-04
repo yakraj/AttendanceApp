@@ -42,7 +42,7 @@ const MonthNames = ({month}: monthType) => {
   return (
     <CustView
       touchable
-      // onpress={()=>navigation.navigate('')}
+      onpress={() => navigation.navigate('retrieve')}
       width="80px"
       marB={10}
       marT={10}

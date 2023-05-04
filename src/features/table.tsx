@@ -90,24 +90,27 @@ type renderType = {
   item: object;
 };
 const renderItem = ({item}: renderType) => (
-  <CustView width="90%">
-    <TableContent text={item.day} width="10%" />
-    <TableContent text={item.startTime} width="10%" />
-    <TableContent text={item.overTime} width="10%" />
-    <TableContent text={item.leaveTime} width="10%" />
-    <TableContent text={item.totalHours} width="10%" />
-    <TableContent text={item.remarks} width="10%" />
+  <CustView width="100%" fdr="row" jus="center">
+    <TableContent text={item.day} width="16%" />
+    <TableContent text={item.startTime} width="16%" />
+    <TableContent text={item.overTime} width="16%" />
+    <TableContent text={item.leaveTime} width="16%" />
+    <TableContent text={item.totalHours} width="16%" />
+    <TableContent text={item.remarks} width="16%" />
   </CustView>
 );
 
 type tableCtype = {
   text: string;
   width: string;
+  title?: boolean;
 };
-const TableContent = ({text, width}: tableCtype) => {
+const TableContent = ({text, width, title}: tableCtype) => {
   return (
-    <CustView width={width}>
-      <CusT>{text}</CusT>
+    <CustView width={width} border="1px solid grey" height="100%">
+      <CusT weight={title ? 'bold' : 'normal'} textAlign="center">
+        {text}
+      </CusT>
     </CustView>
   );
 };
@@ -115,15 +118,15 @@ const TableContent = ({text, width}: tableCtype) => {
 export const Table = () => {
   return (
     <>
-      <Topbar title="FEB/2023" tableData />
+      <Topbar title="FEB/2023" />
       {/* this is table header data */}
-      <CustView width="90%">
-        <TableContent text="DAY" width="10%" />
-        <TableContent text="Start Time" width="10%" />
-        <TableContent text="OVER Time" width="10%" />
-        <TableContent text="LEAVE Time" width="10%" />
-        <TableContent text="TOTAL HOURS" width="10%" />
-        <TableContent text="REMARKS" width="10%" />
+      <CustView padT={20} ofl="hidden" width="100%" jus="center" fdr="row">
+        <TableContent title text="DAY" width="16%" />
+        <TableContent title text="Start Time" width="16%" />
+        <TableContent title text="OVER Time" width="16%" />
+        <TableContent title text="LEAVE Time" width="16%" />
+        <TableContent title text="TOTAL HOURS" width="16%" />
+        <TableContent title text="REMARKS" width="16%" />
       </CustView>
       <FlatList
         data={TableData}

@@ -7,7 +7,8 @@ import {AllData} from '../features/alldata';
 import {AddPerson} from '../features/new.person';
 import {Retrieve} from '../features/retrieve.data';
 import {Table} from '../features/table';
-import { MainProvider } from '../services/main.context';
+import {MainProvider} from '../services/main.context';
+import {EditData} from '../features/editdata';
 const Router = (): JSX.Element => {
   const Stack = createNativeStackNavigator();
   return (
@@ -17,15 +18,16 @@ const Router = (): JSX.Element => {
           screenOptions={{
             headerShown: false,
           }}>
+          <Stack.Screen name="Home" component={App} />
+          <Stack.Screen name="editData" component={EditData} />
+          <Stack.Screen name="table" component={Table} />
           <Stack.Screen name="retrieve" component={Retrieve} />
           <Stack.Screen name="addperson" component={AddPerson} />
-          <Stack.Screen name="Home" component={App} />
           <Stack.Screen name="alldata" component={AllData} />
           <Stack.Screen name="profile" component={Profile} />
-          <Stack.Screen name="table" component={Table} />
         </Stack.Navigator>
       </NavigationContainer>
-    </MyProvider>
+    </MainProvider>
   );
 };
 

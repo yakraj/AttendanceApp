@@ -8,6 +8,7 @@ interface CustomTextProps extends TextProps {
   marR: number;
   top: number;
   left: string;
+  width: string;
   right: number;
   marB: number;
   position: string;
@@ -41,7 +42,7 @@ interface CustomTextProps extends TextProps {
 const CusT = styled.Text<CustomTextProps>`
   ${({size}) => size && `font-size: ${size}px`};
   ${({top}) => top && `top: ${top}px`};
-  ${({top}) => top && `width: 100%`};
+  ${({width}) => width && `width: 100%`};
   ${({left}) => left && `right: ${left}`};
   ${({right}) => right && `right: ${right}px`};
   ${({position}) => position && `position: ${position}`};
