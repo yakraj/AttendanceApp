@@ -6,10 +6,10 @@ import LinearGradient from 'react-native-linear-gradient';
 
 interface Props {
   title: string;
-  tableData?: true | false;
+  isTable?: true | false;
 }
 
-export const Topbar = ({title, tableData}: Props) => {
+export const Topbar = ({title, isTable}: Props) => {
   const navigation = useNavigation();
   return (
     <>
@@ -28,7 +28,7 @@ export const Topbar = ({title, tableData}: Props) => {
 
         <CustView
           height="50px"
-          width={tableData ? '60%' : '80%'}
+          width={isTable ? '60%' : '80%'}
           bcC="red"
           borR={50}
           ofl="hidden">
@@ -46,7 +46,7 @@ export const Topbar = ({title, tableData}: Props) => {
             </CusT>
           </LinearGradient>
         </CustView>
-        {tableData && (
+        {isTable && (
           <CustView
             onpress={() => navigation.navigate('table')}
             touchable

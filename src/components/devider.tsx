@@ -154,6 +154,7 @@ type CompProps = PropsWithChildren<{
   display?: string;
   transform?: string;
   onpress?: () => void;
+  LongPress?: () => void;
   touchable?: boolean;
   tofl?: boolean;
   tblC: string;
@@ -199,6 +200,7 @@ export const CustView = ({
   style,
   children,
   onpress,
+  LongPress,
 }: CompProps) => {
   const variant = getVariant({
     border: border,
@@ -244,6 +246,7 @@ export const CustView = ({
   return touchable ? (
     <TouchableNativeFeedback
       onPress={onpress}
+      onLongPress={LongPress}
       style={style}
       background={TouchableNativeFeedback.Ripple(tblC, tofl ? true : false)}>
       <CusView variant={variant}>{children}</CusView>

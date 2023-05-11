@@ -4,10 +4,13 @@ import {CustView, MyImage} from '../components/devider';
 import React from 'react';
 import {ImageBackground} from 'react-native';
 import {Topbar} from '../components/topbar';
+import {useRoute} from '@react-navigation/native';
 export const Retrieve = () => {
+  const router = useRoute();
+  const {data, month, year} = router.params;
   return (
     <>
-      <Topbar title="FEB/2023" tableData />
+      <Topbar title="FEB/2023" isTable />
       <CustView padT={20} bcC="#D9D9D9" height="100%">
         <CustView height="auto" width="100%">
           <MyImage source={require('../../assects/retrieve.png')} />

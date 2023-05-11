@@ -2,19 +2,36 @@ import CusT from '../components/custom.text';
 import {CustView} from '../components/devider';
 import {ScrollView} from 'react-native';
 import {Topbar} from '../components/topbar';
-import React from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
+import {MainContext} from '../services/main.context';
 
 // year data
+const Yeardata = {
+  data: Object,
+  onMonths: Dispatch<SetStateAction<never[]>>,
+  onactiveYear: Dispatch<SetStateAction<never[]>>,
+};
 
-const YearScroll = () => {
+const YearScroll = ({data, onMonths, onactiveYear}: Yeardata) => {
   return (
     <CustView
       width="80px"
       marL={10}
       marR={10}
       borR={30}
+      touchable
+      onpress={() => {
+        onMonths(data.months);
+        onactiveYear(data.year);
+      }}
       ofl="hidden"
       height="40px">
       <LinearGradient
@@ -26,7 +43,7 @@ const YearScroll = () => {
         }}
         colors={['#FFA14A', '#E6C0FE']}>
         <CusT weight="bold" size={20}>
-          2023
+          {data.year}
         </CusT>
       </LinearGradient>
     </CustView>
@@ -35,14 +52,22 @@ const YearScroll = () => {
 
 type monthType = {
   month: string;
+  data: any;
+  activeYear: number;
 };
-const MonthNames = ({month}: monthType) => {
+const MonthNames = ({month, data, activeYear}: monthType) => {
   const navigation = useNavigation();
 
   return (
     <CustView
       touchable
-      onpress={() => navigation.navigate('retrieve')}
+      onpress={() =>
+        navigation.navigate('retrieve', {
+          year: activeYear,
+          month: month,
+          data: data,
+        })
+      }
       width="80px"
       marB={10}
       marT={10}
@@ -65,6 +90,15 @@ const MonthNames = ({month}: monthType) => {
   );
 };
 export const AllData = () => {
+  const [Months, onMonths] = useState([]);
+  const [activeYear, onactiveYear] = useState([]);
+  const {tableData} = useContext(MainContext);
+
+  useEffect(() => {
+    onMonths(tableData[0].months);
+    onactiveYear(tableData[0].year);
+  }, []);
+
   return (
     <>
       <Topbar title="All Data" />
@@ -75,30 +109,36 @@ export const AllData = () => {
             marginTop: 20,
             paddingBottom: 10,
             borderBottomColor: 'grey',
+            width: '100%',
             borderBottomWidth: 1,
           }}
           horizontal>
-          <YearScroll />
-          <YearScroll />
-          <YearScroll />
-          <YearScroll />
+          {tableData.map((x, i) => {
+            return (
+              <YearScroll
+                key={i}
+                onactiveYear={onactiveYear}
+                onMonths={onMonths}
+                data={x}
+              />
+            );
+          })}
         </ScrollView>
         {/* from here month boxes starts */}
 
-        <CustView jus="space-around" fdr="row" fwr="wrap">
+        <CustView width="100%" jus="space-around" fdr="row" fwr="wrap">
           {/* all twelve month names pass with month prop to MonthNames component  */}
-          <MonthNames month="jan" />
-          <MonthNames month="feb" />
-          <MonthNames month="mar" />
-          <MonthNames month="apr" />
-          <MonthNames month="may" />
-          <MonthNames month="jun" />
-          <MonthNames month="jul" />
-          <MonthNames month="aug" />
-          <MonthNames month="sep" />
-          <MonthNames month="oct" />
-          <MonthNames month="nov" />
-          <MonthNames month="dec" />
+          {Object.keys(Months).map((x, i) => {
+            return (
+              <MonthNames
+                activeYear={activeYear}
+                key={i}
+                data={Months[x]}
+                Months={Months}
+                month={x}
+              />
+            );
+          })}
         </CustView>
       </CustView>
     </>

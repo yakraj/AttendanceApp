@@ -1,14 +1,20 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
 import {Topbar} from '../components/topbar';
-import {TextInput, ScrollView} from 'react-native';
+import {TextInput, ScrollView, Alert} from 'react-native';
 import {CustView, NMorph} from '../components/devider';
 import CusT from '../components/custom.text';
 import LinearGradient from 'react-native-linear-gradient';
+import {MainContext} from '../services/main.context';
+import {useNavigation} from '@react-navigation/native';
 
 type Texttypes = {
   title: string;
+  val: () => void;
+  placeholder: string;
+  change?: () => void;
+  Numeric?: boolean;
 };
-const TextArea = ({title}: Texttypes) => {
+const TextArea = ({title, val, change, placeholder, Numeric}: Texttypes) => {
   return (
     <CustView height="120px" marB={20} borR={15} ofl="hidden" width="90%">
       <LinearGradient
@@ -24,6 +30,9 @@ const TextArea = ({title}: Texttypes) => {
           {title}
         </CusT>
         <TextInput
+          value={val}
+          keyboardType={Numeric ? 'numeric' : 'default'}
+          onChangeText={text => change(text)}
           style={{
             borderWidth: 1,
             borderColor: 'grey',
@@ -32,7 +41,7 @@ const TextArea = ({title}: Texttypes) => {
             paddingLeft: 20,
             borderRadius: 10,
           }}
-          placeholder="hello there"
+          placeholder={placeholder}
         />
       </LinearGradient>
     </CustView>
@@ -40,15 +49,40 @@ const TextArea = ({title}: Texttypes) => {
 };
 
 export const AddPerson = () => {
+  const {CreateUser} = useContext(MainContext);
+  const [Name, onName] = useState<string>();
+  const [SalP, onSalP] = useState<string>();
+  const [Exch, onExch] = useState<string>();
+  const [Pf, onPf] = useState<string>();
+  const [Esic, onEsic] = useState<string>();
+
+  const navigation = useNavigation();
   return (
     <>
       <Topbar title="Add A Person" />
       {/* this is full container  */}
       <ScrollView>
         <CustView marT={20}>
-          <TextArea title="Name" />
-          <TextArea title="Salary/Hour" />
-          <TextArea title="Extra Charges" />
+          <TextArea
+            placeholder="Person Name"
+            val={Name}
+            change={onName}
+            title="Name"
+          />
+          <TextArea
+            placeholder="1 Hour Salary"
+            val={SalP}
+            Numeric
+            change={onSalP}
+            title="Salary/Hour"
+          />
+          <TextArea
+            placeholder="1 Hour Salary"
+            val={Exch}
+            Numeric
+            change={onExch}
+            title="Extra Charges"
+          />
           {/* this is pf and esic section */}
           <CustView fdr="row" height="120px" borR={15} ofl="hidden" width="90%">
             <LinearGradient
@@ -66,6 +100,9 @@ export const AddPerson = () => {
                   PF%
                 </CusT>
                 <TextInput
+                  value={Pf}
+                  keyboardType="numeric"
+                  onChangeText={text => onPf(text)}
                   style={{
                     borderWidth: 1,
                     borderColor: 'grey',
@@ -74,7 +111,7 @@ export const AddPerson = () => {
                     paddingLeft: 20,
                     borderRadius: 10,
                   }}
-                  placeholder="hello there"
+                  placeholder="PF % "
                 />
               </CustView>
               <CustView width="50%">
@@ -88,6 +125,9 @@ export const AddPerson = () => {
                   ESIC
                 </CusT>
                 <TextInput
+                  value={Esic}
+                  keyboardType="numeric"
+                  onChangeText={text => onEsic(text)}
                   style={{
                     borderWidth: 1,
                     borderColor: 'grey',
@@ -96,7 +136,7 @@ export const AddPerson = () => {
                     paddingLeft: 20,
                     borderRadius: 10,
                   }}
-                  placeholder="hello there"
+                  placeholder="Esic Charge"
                 />
               </CustView>
             </LinearGradient>
@@ -109,6 +149,12 @@ export const AddPerson = () => {
             borR={20}
             ofl="hidden"
             touchable
+            onpress={() => {
+              CreateUser(Name, SalP, Pf, Esic, Exch);
+              Alert.alert('Created', 'Successfully Created new user!', [
+                {text: 'OK', onPress: () => navigation.goBack()},
+              ]);
+            }}
             bcC="red">
             <LinearGradient
               style={{

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 import {CustView, MyImage, NMorph} from './devider';
 import {NavigationProp} from '@react-navigation/native';
 
@@ -7,13 +7,18 @@ import {Neomorph, Shadow} from 'react-native-neomorph-shadows';
 import {useFocusEffect} from '@react-navigation/native';
 import {Image} from 'react-native-svg';
 import CusT from './custom.text';
+import {MainContext} from '../services/main.context';
 interface Props {
   navigation: NavigationProp<any, any>;
 }
 
 export const BottomBar = ({navigation}: Props) => {
   // find how many days are there in current month
-
+  let getYear = new Date().getFullYear();
+  let getMonth = new Date()
+    .toLocaleString('default', {month: 'short'})
+    .toLowerCase();
+  const {ActiveUser} = useContext(MainContext);
   useFocusEffect(() => {
     const daysInMonth = new Date(
       new Date().getFullYear(),
@@ -35,7 +40,11 @@ export const BottomBar = ({navigation}: Props) => {
         source={require('../../assects/navbar.png')}>
         <CustView
           onpress={() => {
-            navigation.navigate('table');
+            navigation.navigate('table', {
+              year: getYear,
+              month: getMonth,
+              userId: ActiveUser,
+            });
           }}
           marL={20}
           tblC="blue"

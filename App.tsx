@@ -48,19 +48,19 @@ export const BackgroundRect = ({title, data, unatt, pass}: CustBR) => {
 };
 
 function App({navigation}): JSX.Element {
-  const {ActiveUser, tableData, userData} = useContext(MainContext);
+  const {ActiveUser, tableData, userData, CurMOD} = useContext(MainContext);
   const [User, setUser] = React.useState<any>([]);
   const [UserWork, setUserWork] = React.useState<any>([]);
 
   useFocusEffect(
     React.useCallback(() => {
       // find all objects inside tableData array where userId is ActiveUser
-      const find = tableData.filter(id => id.userId === ActiveUser);
+      const find = CurMOD.filter(id => id.userId === ActiveUser);
       setUserWork(find);
       // find activeuse in userData array
       const User = userData.filter(id => id.userId === ActiveUser);
       setUser(User);
-    }, [tableData, userData]),
+    }, [CurMOD, userData, ActiveUser]),
   );
 
   return (

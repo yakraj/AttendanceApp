@@ -1,4 +1,4 @@
-import React, {createContext, useState} from 'react';
+import React, {createContext, useEffect, useState} from 'react';
 
 // Create the context object
 export const MainContext = createContext(null);
@@ -6,6 +6,7 @@ export const MainContext = createContext(null);
 // Create the provider component
 export const MainProvider = ({children}) => {
   const [ActiveUser, setActiveUser] = useState<string>('yakraj1234');
+  const [CurMOD, setCurMOD] = useState<string>([]);
 
   // this is for add new user
   const [Name, setName] = useState<string>('');
@@ -42,55 +43,113 @@ export const MainProvider = ({children}) => {
     },
   ]);
 
+  const ChangeUser = (userId: string) => {
+    setActiveUser(userId);
+  };
   const [tableData, onTableData] = useState([
     {
-      day: '01',
-      startTime: '-',
-      overTime: '-',
-      leaveTime: 0,
-      totalHours: 0,
-      remarks: 'Saturday',
-      userId: 'yakraj1234',
-    },
-    {
-      day: '02',
-      startTime: '7:00 AM',
-      overTime: '7:00 PM',
-      leaveTime: 0,
-      totalHours: 12,
-      remarks: 'present',
-      userId: 'yakraj1234',
-    },
-    {
-      day: '03',
-      startTime: '7:00 AM',
-      overTime: '7:00 PM',
-      leaveTime: 1,
-      totalHours: 11,
-      remarks: 'present',
-      userId: 'yakraj1234',
-    },
-    {
-      day: '03',
-      startTime: '7:00 AM',
-      overTime: '7:00 PM',
-      leaveTime: 1,
-      totalHours: 11,
-      remarks: 'present',
-      userId: 'dolma1234',
+      year: 2023,
+      months: {
+        jan: [
+          {
+            day: '01',
+            startTime: '-',
+            overTime: '-',
+            leaveTime: 0,
+            totalHours: 0,
+            remarks: 'Saturday',
+            userId: 'yakraj1234',
+            uniqId: 'may01ewf',
+          },
+          {
+            day: '02',
+            startTime: '7:00 AM',
+            overTime: '7:00 PM',
+            leaveTime: 0,
+            totalHours: 12,
+            remarks: 'present',
+            userId: 'yakraj1234',
+            uniqId: 'may01easd',
+          },
+          {
+            day: '03',
+            startTime: '7:00 AM',
+            overTime: '7:00 PM',
+            leaveTime: 1,
+            totalHours: 11,
+            remarks: 'present',
+            userId: 'yakraj1234',
+            uniqId: 'mayewwf',
+          },
+          {
+            day: '03',
+            startTime: '7:00 AM',
+            overTime: '7:00 PM',
+            leaveTime: 1,
+            totalHours: 11,
+            remarks: 'present',
+            uniqId: 'hghg045sdf',
+          },
+        ],
+        may: [
+          {
+            day: '01',
+            startTime: '-',
+            overTime: '-',
+            leaveTime: 0,
+            totalHours: 0,
+            remarks: 'Saturday',
+            userId: 'yakraj1234',
+            uniqId: 'may01ewfwe55',
+          },
+          {
+            day: '02',
+            startTime: '7:00 AM',
+            overTime: '7:00 PM',
+            leaveTime: 0,
+            totalHours: 12,
+            remarks: 'present',
+            userId: 'yakraj1234',
+            uniqId: 'may01ehhg',
+          },
+          {
+            day: '02',
+            startTime: '7:00 AM',
+            overTime: '7:00 PM',
+            leaveTime: 0,
+            totalHours: 12,
+            remarks: 'present',
+            userId: 'dolma1234',
+            uniqId: 'may01w556',
+          },
+        ],
+      },
     },
   ]);
 
   //  for create new user
-  type createUsertype = {
-    name: string;
-    salph: number;
-    pf: number;
-    esic: number;
-    exCharge: number;
-  };
 
-  const CreateUser = ({name, salph, pf, esic, exCharge}: createUsertype) => {
+  function generateRandomString(length: number) {
+    let result = '';
+    const characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      result += characters.charAt(randomIndex);
+    }
+
+    return result;
+  }
+
+  const CreateUser = (
+    name: string,
+    salph: string,
+    pf: string,
+    esic: string,
+    exCharge: string,
+  ) => {
+    let userName = name + generateRandomString(4);
     let TempUser = {
       name: '',
       salph: 0,
@@ -100,12 +159,41 @@ export const MainProvider = ({children}) => {
       userId: '',
     };
     TempUser.name = name;
-    TempUser.salph = salph;
-    TempUser.pf = pf;
-    TempUser.esic = esic;
-    TempUser.exCharge = exCharge;
-    TempUser.userId = name + '1234';
+    TempUser.salph = Number(salph);
+    TempUser.pf = Number(pf);
+    TempUser.esic = Number(esic);
+    TempUser.exCharge = Number(exCharge);
+    TempUser.userId = userName;
     onUserData([...userData, TempUser]);
+
+    // it is for temp attendance
+    let Data = [];
+    let year = new Date().getFullYear();
+    let tempTable = tableData;
+    let currentMonth = new Date()
+      .toLocaleString('default', {month: 'short'})
+      .toLowerCase();
+
+    for (let i = 0; i < new Date().getDate(); i++) {
+      let dayData = {
+        day: String(i + 1),
+        startTime: '-',
+        overTime: '-',
+        leaveTime: 0,
+        totalHours: 0,
+        remarks: 'Unfilled',
+        userId: userName,
+        uniqId: currentMonth + String(i + 1) + generateRandomString(5),
+      };
+      Data.push(dayData);
+    }
+    for (let i = 0; i < tempTable.length; i++) {
+      if (tempTable[i].year === year) {
+        tempTable[i].months[currentMonth.toLowerCase()].push(...Data);
+        break;
+      }
+    }
+    onTableData(tempTable);
   };
 
   // export data
@@ -114,6 +202,7 @@ export const MainProvider = ({children}) => {
     setActiveUser,
     userData,
     tableData, //  this is for new user
+    onTableData,
     Name,
     setName,
     Salph,
@@ -125,8 +214,19 @@ export const MainProvider = ({children}) => {
     ExCharge,
     setExCharge,
     CreateUser,
+    ChangeUser,
+    CurMOD,
+    setCurMOD,
+    onUserData,
   };
 
+  useEffect(() => {
+    let ThisYear = tableData.find(x => x.year === new Date().getFullYear());
+    let Curmonth = new Date()
+      .toLocaleString('default', {month: 'short'})
+      .toLowerCase();
+    setCurMOD(ThisYear.months[Curmonth]);
+  }, [ActiveUser]);
   return (
     <MainContext.Provider value={contextValue}>{children}</MainContext.Provider>
   );
