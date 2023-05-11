@@ -1,29 +1,56 @@
 import {BackgroundRect} from '../../App';
 import CusT from '../components/custom.text';
 import {CustView, MyImage} from '../components/devider';
-import React from 'react';
+import React, {useContext, useState} from 'react';
 import {ImageBackground} from 'react-native';
 import {Topbar} from '../components/topbar';
 import {useRoute} from '@react-navigation/native';
+import {MainContext} from '../services/main.context';
 export const Retrieve = () => {
   const router = useRoute();
   const {data, month, year} = router.params;
+
+  const {ActiveUser, tableData, userData, CurMOD} = useContext(MainContext);
+  const [User, setUser] = React.useState<any>([]);
+  const [TopObject, setTopObject] = React.useState<any>([]);
+  const [UserWork, setUserWork] = React.useState<any>([]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // find all objects inside tableData array where userId is ActiveUser
+      const find = data.filter(id => id.userId === ActiveUser);
+      setUserWork(find);
+      // find activeuse in userData array
+      const User = userData.filter(id => id.userId === ActiveUser);
+      setUser(User);
+      const tempObj = {
+        year: year,
+        month: month,
+        userId: ActiveUser,
+      };
+      setTopObject(tempObj);
+    }, [data, userData, ActiveUser]),
+  );
   return (
     <>
-      <Topbar title="FEB/2023" isTable />
+      <Topbar route={TopObject} title="FEB/2023" isTable />
+
       <CustView padT={20} bcC="#D9D9D9" height="100%">
         <CustView height="auto" width="100%">
-          <MyImage source={require('../../assects/retrieve.png')} />
-          <CustView position="absolute" Right="45" Top="-25">
-            <MyImage source={require('../../assects/jobag.png')} />
+          <MyImage source={require('./assects/hometopd.png')} />
+          <CustView position="absolute" Left="35" Top="-25">
+            <MyImage source={require('./assects/jobag.png')} />
           </CustView>
-          <CustView position="absolute" Left="70" Top="5">
+          <CustView position="absolute" Left="20" Top="85">
+            <MyImage source={require('./assects/notification.png')} />
+          </CustView>
+          <CustView position="absolute" Right="55" Top="15">
             <MyImage
               style={{width: 85, height: 85, marginBottom: -10}}
-              source={require('../../assects/avatar.png')}
+              source={require('./assects/avatar.png')}
             />
             <CusT size={30} weight="bold" color="#fff">
-              Yakraj
+              {User[0] && User[0].name.substring(0, 6)}
             </CusT>
           </CustView>
         </CustView>
@@ -34,10 +61,28 @@ export const Retrieve = () => {
           jus="space-around"
           display="flex"
           fdr="row">
-          <BackgroundRect title="Hours" data="246" />
-          <BackgroundRect title="Days" data="20" />
-          <BackgroundRect title="Pass" data="4" />
-          <BackgroundRect unatt="10" title="UnAtt" data="5" />
+          <BackgroundRect
+            title="Hours"
+            data={UserWork.reduce((acc, curr) => {
+              return acc + curr.totalHours;
+            }, 0)}
+          />
+          <BackgroundRect
+            title="Days"
+            data={UserWork.filter(day => day.totalHours > 4).length}
+          />
+          <BackgroundRect
+            title="Pass"
+            pass
+            data={UserWork.reduce((acc, curr) => {
+              return acc + curr.leaveTime;
+            }, 0)}
+          />
+          <BackgroundRect
+            unatt="10"
+            title="UnAtt"
+            data={UserWork.filter(day => day.totalHours === 0).length}
+          />
         </CustView>
         {/* this is for salary */}
         <ImageBackground
@@ -46,7 +91,7 @@ export const Retrieve = () => {
             height: 250,
             width: '100%',
           }}
-          source={require('../../assects/rect.png')}>
+          source={require('./assects/rect.png')}>
           <CustView
             ali="flex-start"
             padd={40}
@@ -57,9 +102,12 @@ export const Retrieve = () => {
               Salary
             </CusT>
             <CustView fdr="row" ali="flex-start">
-              <MyImage source={require('../../assects/rs.png')} />
+              <MyImage source={require('./assects/rs.png')} />
               <CusT size={60} weight="bold" color="grey">
-                24,000
+                {User[0] &&
+                  UserWork.reduce((acc, curr) => {
+                    return acc + curr.totalHours;
+                  }, 0) * User[0].salph}
               </CusT>
             </CustView>
             <CustView fdr="row">
@@ -68,7 +116,12 @@ export const Retrieve = () => {
               </CusT>
               <CusT size={15} color="grey">
                 {'   Rs. '}
-                2500
+                {User[0] &&
+                  (UserWork.filter(day => day.totalHours > 4).length *
+                    8 *
+                    User[0].salph *
+                    User[0].pf) /
+                    100}
               </CusT>
             </CustView>
           </CustView>
