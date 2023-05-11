@@ -7,9 +7,10 @@ import LinearGradient from 'react-native-linear-gradient';
 interface Props {
   title: string;
   isTable?: true | false;
+  route?: object;
 }
 
-export const Topbar = ({title, isTable}: Props) => {
+export const Topbar = ({title, isTable, route}: Props) => {
   const navigation = useNavigation();
   return (
     <>
@@ -48,7 +49,7 @@ export const Topbar = ({title, isTable}: Props) => {
         </CustView>
         {isTable && (
           <CustView
-            onpress={() => navigation.navigate('table')}
+            onpress={() => navigation.navigate('table', route)}
             touchable
             tofl={true}
             tblC="#5CFFEB"

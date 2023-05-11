@@ -64,7 +64,7 @@ function App({navigation}): JSX.Element {
   );
 
   return (
-    <CustView padT={20} bcC="#D9D9D9" height="100%">
+    <CustView padT={20} bcC="#D9D9D9" height="100%"> 
       <CustView height="auto" width="100%">
         <MyImage source={require('./assects/hometopd.png')} />
         <CustView position="absolute" Left="35" Top="-25">
