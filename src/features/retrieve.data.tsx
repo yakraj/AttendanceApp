@@ -4,7 +4,7 @@ import {CustView, MyImage} from '../components/devider';
 import React, {useContext, useState} from 'react';
 import {ImageBackground} from 'react-native';
 import {Topbar} from '../components/topbar';
-import {useRoute} from '@react-navigation/native';
+import {useFocusEffect, useRoute} from '@react-navigation/native';
 import {MainContext} from '../services/main.context';
 export const Retrieve = () => {
   const router = useRoute();
@@ -37,17 +37,17 @@ export const Retrieve = () => {
 
       <CustView padT={20} bcC="#D9D9D9" height="100%">
         <CustView height="auto" width="100%">
-          <MyImage source={require('./assects/hometopd.png')} />
+          <MyImage source={require('../../assects/hometopd.png')} />
           <CustView position="absolute" Left="35" Top="-25">
-            <MyImage source={require('./assects/jobag.png')} />
+            <MyImage source={require('../../assects/jobag.png')} />
           </CustView>
           <CustView position="absolute" Left="20" Top="85">
-            <MyImage source={require('./assects/notification.png')} />
+            <MyImage source={require('../../assects/notification.png')} />
           </CustView>
           <CustView position="absolute" Right="55" Top="15">
             <MyImage
               style={{width: 85, height: 85, marginBottom: -10}}
-              source={require('./assects/avatar.png')}
+              source={require('../../assects/avatar.png')}
             />
             <CusT size={30} weight="bold" color="#fff">
               {User[0] && User[0].name.substring(0, 6)}
@@ -91,7 +91,7 @@ export const Retrieve = () => {
             height: 250,
             width: '100%',
           }}
-          source={require('./assects/rect.png')}>
+          source={require('../../assects/rect.png')}>
           <CustView
             ali="flex-start"
             padd={40}
@@ -102,7 +102,7 @@ export const Retrieve = () => {
               Salary
             </CusT>
             <CustView fdr="row" ali="flex-start">
-              <MyImage source={require('./assects/rs.png')} />
+              <MyImage source={require('../../assects/rs.png')} />
               <CusT size={60} weight="bold" color="grey">
                 {User[0] &&
                   UserWork.reduce((acc, curr) => {

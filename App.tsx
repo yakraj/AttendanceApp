@@ -63,8 +63,27 @@ function App({navigation}): JSX.Element {
     }, [CurMOD, userData, ActiveUser]),
   );
 
-  return (
-    <CustView padT={20} bcC="#D9D9D9" height="100%"> 
+  // console.log(userData.length  0);
+  return userData.length === 0 ? (
+    <CustView
+      jus="center"
+      ali="center"
+      height="100%"
+      position="relative"
+      width="100%">
+      <MyImage
+        resizeMode="contain"
+        style={{height: '100%'}}
+        source={require('./assects/nouser.png')}
+      />
+
+      <CusT position="absolute" top={600} size={20} color="red">
+        No User added Please Add User By clicking profile icon
+      </CusT>
+      <BottomBar navigation={navigation} />
+    </CustView>
+  ) : (
+    <CustView padT={20} bcC="#D9D9D9" height="100%">
       <CustView height="auto" width="100%">
         <MyImage source={require('./assects/hometopd.png')} />
         <CustView position="absolute" Left="35" Top="-25">

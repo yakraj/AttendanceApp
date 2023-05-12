@@ -5,7 +5,7 @@ export const MainContext = createContext(null);
 //
 // Create the provider component
 export const MainProvider = ({children}) => {
-  const [ActiveUser, setActiveUser] = useState<string>('yakraj1234');
+  const [ActiveUser, setActiveUser] = useState<string>();
   const [CurMOD, setCurMOD] = useState<string>([]);
 
   // this is for add new user
@@ -14,39 +14,48 @@ export const MainProvider = ({children}) => {
   const [Pf, setPf] = useState<number>(0);
   const [Esic, setEsic] = useState<number>(0);
   const [ExCharge, setExCharge] = useState<number>(0);
+  // thi state for firsttime ever the app gets initilized
+  const [initilized, oninitilized] = useState<boolean>(false);
+  const date = new Date();
+  const currYear = date.getFullYear();
+  const currMonth = date
+    .toLocaleString('default', {month: 'short'})
+    .toLowerCase();
+  const currDay = date.getDate();
 
   // Set the context value using an object
-  const [userData, onUserData] = useState([
-    {
-      name: 'yakraj pariyar',
-      salph: 74,
-      pf: 12,
-      esic: 250,
-      exCharge: 200,
-      userId: 'yakraj1234',
-    },
-    {
-      name: 'tulsi pariyar',
-      salph: 54,
-      pf: 0,
-      esic: 250,
-      exCharge: 0,
-      userId: 'tulsi1234',
-    },
-    {
-      name: 'Dolma pariyar',
-      salph: 54,
-      pf: 12,
-      esic: 250,
-      exCharge: 0,
-      userId: 'dolma1234',
-    },
-  ]);
+  const [userData, onUserData] = useState([]);
 
   const ChangeUser = (userId: string) => {
     setActiveUser(userId);
   };
   const [tableData, onTableData] = useState([
+    // [
+    //   {
+    //     name: 'yakraj pariyar',
+    //     salph: 74,
+    //     pf: 12,
+    //     esic: 250,
+    //     exCharge: 200,
+    //     userId: 'yakraj1234',
+    //   },
+    //   {
+    //     name: 'tulsi pariyar',
+    //     salph: 54,
+    //     pf: 0,
+    //     esic: 250,
+    //     exCharge: 0,
+    //     userId: 'tulsi1234',
+    //   },
+    //   {
+    //     name: 'Dolma pariyar',
+    //     salph: 54,
+    //     pf: 12,
+    //     esic: 250,
+    //     exCharge: 0,
+    //     userId: 'dolma1234',
+    //   },
+    // ]
     {
       year: 2023,
       months: {
@@ -170,9 +179,6 @@ export const MainProvider = ({children}) => {
     let Data = [];
     let year = new Date().getFullYear();
     let tempTable = tableData;
-    let currentMonth = new Date()
-      .toLocaleString('default', {month: 'short'})
-      .toLowerCase();
 
     for (let i = 0; i < new Date().getDate(); i++) {
       let dayData = {
@@ -183,19 +189,98 @@ export const MainProvider = ({children}) => {
         totalHours: 0,
         remarks: 'Unfilled',
         userId: userName,
-        uniqId: currentMonth + String(i + 1) + generateRandomString(5),
+        uniqId: currMonth + String(i + 1) + generateRandomString(5),
       };
       Data.push(dayData);
     }
     for (let i = 0; i < tempTable.length; i++) {
       if (tempTable[i].year === year) {
-        tempTable[i].months[currentMonth.toLowerCase()].push(...Data);
+        tempTable[i].months[currMonth.toLowerCase()].push(...Data);
         break;
       }
     }
     onTableData(tempTable);
   };
 
+  // data checker and retriever
+  useEffect(() => {
+    const YearChecker = tableData.find(x => (x.year = currYear));
+    if (initilized) {
+      if (!YearChecker) {
+        onTableData([
+          ...tableData,
+          {
+            year: currYear,
+            months: {
+              [currMonth]: [],
+            },
+          },
+        ]);
+      } else {
+        let tempTable = tableData;
+        const MonthChecker = YearChecker.months.hasOwnProperty(currMonth);
+        let findTargetObject = tempTable.find(obj => obj.year === currYear);
+        if (MonthChecker) {
+          console.log('Month is added there');
+          // while the month data is exist then it will find the yesterdays data is added or not
+          // it will loop throught the users and search, same users data added or not
+          const today = new Date();
+          const yesterday = new Date(today); // Create a new date object with the same value as today
+          yesterday.setDate(today.getDate() - 1); // Subtract 1 day from the date
+          const yesterdayMonth = yesterday.toLocaleString('default', {
+            month: 'long',
+          }); // Get the month name
+          const yesterdayDate = yesterday.getDate(); // Get the day of the month
+          const YesterDayDataChecker = user => {
+            const hasEntry = findTargetObject.months[
+              yesterdayMonth.toLowerCase()
+            ].some(
+              entry => entry.userId === user && entry.day === yesterdayDate,
+            );
+            if (hasEntry) {
+              console.log('has entry is true');
+              return true;
+            } else {
+              findTargetObject.months[yesterdayMonth.toLowerCase()].push({
+                day: yesterdayDate,
+                startTime: '-',
+                overTime: '-',
+                leaveTime: 0,
+                totalHours: 0,
+                remarks: 'unfilled',
+                userId: user,
+                uniqId: yesterdayMonth + generateRandomString(5),
+              });
+              onTableData(tempTable);
+            }
+          };
+          // console.log(yesterdayMonth);
+          // console.log(findTargetObject.months[yesterdayMonth]);
+
+          for (let i = 0; i < userData.length; i++) {
+            YesterDayDataChecker(userData[i].userId);
+          }
+        } else {
+          // while the month is not exist it will add month array
+          findTargetObject.months[currMonth.toLowerCase()] = currMonth;
+          onTableData(tempTable);
+        }
+      }
+    } else {
+      console.log('initilized is false');
+      onTableData([
+        ...tableData,
+        {
+          year: currYear,
+          months: {
+            [currMonth]: [],
+          },
+        },
+      ]);
+      oninitilized(true);
+    }
+  }, []);
+  console.log(tableData);
   // export data
   const contextValue = {
     ActiveUser,
@@ -222,10 +307,9 @@ export const MainProvider = ({children}) => {
 
   useEffect(() => {
     let ThisYear = tableData.find(x => x.year === new Date().getFullYear());
-    let Curmonth = new Date()
-      .toLocaleString('default', {month: 'short'})
-      .toLowerCase();
-    setCurMOD(ThisYear.months[Curmonth]);
+    if (ThisYear) {
+      setCurMOD(ThisYear.months[currMonth]);
+    }
   }, [ActiveUser]);
   return (
     <MainContext.Provider value={contextValue}>{children}</MainContext.Provider>
