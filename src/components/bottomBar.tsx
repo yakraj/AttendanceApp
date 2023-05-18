@@ -5,7 +5,6 @@ import {NavigationProp} from '@react-navigation/native';
 import {ImageBackground, Text, View} from 'react-native';
 import {Neomorph, Shadow} from 'react-native-neomorph-shadows';
 import {useFocusEffect} from '@react-navigation/native';
-import {Image} from 'react-native-svg';
 import CusT from './custom.text';
 import {MainContext} from '../services/main.context';
 interface Props {

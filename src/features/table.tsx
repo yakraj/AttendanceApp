@@ -73,7 +73,7 @@ export const Table = () => {
 
   return (
     <>
-      <Topbar title="FEB/2023" />
+      <Topbar pdf title="FEB/2023" />
       {/* this is table header data */}
       <CustView padT={20} ofl="hidden" width="100%" jus="center" fdr="row">
         <TableContent title text="DAY" width="16%" />

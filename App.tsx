@@ -63,7 +63,6 @@ function App({navigation}): JSX.Element {
     }, [CurMOD, userData, ActiveUser]),
   );
 
-  // console.log(userData.length  0);
   return userData.length === 0 ? (
     <CustView
       jus="center"
@@ -89,8 +88,19 @@ function App({navigation}): JSX.Element {
         <CustView position="absolute" Left="35" Top="-25">
           <MyImage source={require('./assects/jobag.png')} />
         </CustView>
-        <CustView position="absolute" Left="20" Top="85">
-          <MyImage source={require('./assects/notification.png')} />
+        <CustView
+          touchable
+          tofl
+          onpress={() => navigation.navigate('dutyadd')}
+          tblC="#000"
+          position="absolute"
+          Left="15"
+          Top="78">
+          <MyImage
+            resizeMode="contain"
+            style={{width: 40}}
+            source={require('./assects/plusicon.png')}
+          />
         </CustView>
         <CustView position="absolute" Right="55" Top="15">
           <MyImage

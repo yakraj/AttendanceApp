@@ -5,7 +5,11 @@ import {CustView, NMorph} from '../components/devider';
 import CusT from '../components/custom.text';
 import LinearGradient from 'react-native-linear-gradient';
 import {MainContext} from '../services/main.context';
-import {useNavigation} from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 
 type Texttypes = {
   title: string;
@@ -48,7 +52,7 @@ const TextArea = ({title, val, change, placeholder, Numeric}: Texttypes) => {
   );
 };
 
-export const AddPerson = () => {
+export const EditUser = () => {
   const {CreateUser} = useContext(MainContext);
   const [Name, onName] = useState<string>('');
   const [SalP, onSalP] = useState<string>('');
@@ -58,9 +62,27 @@ export const AddPerson = () => {
   const [Company, onCompany] = useState<string>('');
 
   const navigation = useNavigation();
+  const router = useRoute();
+  const {user} = router.params;
+  const {userData, UpdateUser} = useContext(MainContext);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (user) {
+        let SelectedUser = userData.find(x => x.userId === user);
+        onName(SelectedUser.name);
+        onSalP(SelectedUser.salph.toString());
+        onExch(SelectedUser.exCharge.toString());
+        onPf(SelectedUser.pf.toString());
+        onEsic(SelectedUser.esic.toString());
+        onCompany(SelectedUser.company);
+      }
+    }, [userData]),
+  );
+
   return (
     <>
-      <Topbar title="Add A Person" />
+      <Topbar title="Update User Data" />
       {/* this is full container  */}
       <ScrollView>
         <CustView marT={20}>
@@ -157,24 +179,10 @@ export const AddPerson = () => {
             ofl="hidden"
             touchable
             onpress={() => {
-              if (
-                Name.length < 1 ||
-                Company.length < 1 ||
-                SalP.length < 1 ||
-                Pf.length < 1 ||
-                Esic.length < 1 ||
-                Exch.length < 1
-              ) {
-                Alert.alert('Error', 'Please fill all the fields!', [
-                  {text: 'OK', onPress: () => null, style: 'cancel'},
-                ]);
-                return;
-              } else {
-                CreateUser(Name, Company, SalP, Pf, Esic, Exch);
-                Alert.alert('Created', 'Successfully Created new user!', [
-                  {text: 'OK', onPress: () => navigation.goBack()},
-                ]);
-              }
+              UpdateUser(Name, Company, SalP, Pf, Esic, Exch, user);
+              Alert.alert('Updated', 'Successfully Updated user!', [
+                {text: 'OK', onPress: () => navigation.goBack()},
+              ]);
             }}
             bcC="red">
             <LinearGradient

@@ -20,7 +20,30 @@ export const EditData = () => {
   const [activeStart, onactiveStart] = useState(true);
   const {id} = route.params;
   const [PrevData, onPrevData] = useState();
-  const showTimePicker = () => {
+  const [DefaultTime, onDefaultTime] = useState(new Date());
+
+  const showTimePicker = (time: string) => {
+    console.log(time);
+    const currentDate = new Date();
+    const Desired =
+      time === 'start' ? '7:00 AM' : time === 'over' ? '7:00 PM' : time;
+    console.log(Desired);
+    // Extract hour, minute, and AM/PM from the desiredTime string
+    const [hour, minute, ampm] = Desired.split(/:| /);
+    // Convert hour from 12-hour format to 24-hour format
+    let hours = parseInt(hour, 10);
+    if (ampm === 'PM' && hours !== 12) {
+      hours += 12;
+    } else if (ampm === 'AM' && hours === 12) {
+      hours = 0;
+    }
+
+    // Set the desired time to the currentDate object
+    currentDate.setHours(hours);
+    currentDate.setMinutes(parseInt(minute, 10));
+    currentDate.setSeconds(0);
+
+    onDefaultTime(currentDate);
     setTimePickerVisible(true);
   };
 
@@ -79,7 +102,7 @@ export const EditData = () => {
 
     // Calculate the difference in minutes
     const timeDiffMinutes = time2.diff(time1, 'minutes');
-
+    console.log(timeDiffMinutes);
     // Extract hours and minutes
     const hours = Math.floor(timeDiffMinutes / 60);
     const minutes = timeDiffMinutes % 60;
@@ -110,9 +133,7 @@ export const EditData = () => {
       }
     }
     onTableData(tempTable);
-    Alert.alert('Created', 'Successfully Created new user!', [
-      {text: 'OK', onPress: () => navigation.goBack()},
-    ]);
+    return navigation.goBack();
   };
   // update data of user
   const UpdateData = () => {
@@ -174,7 +195,12 @@ export const EditData = () => {
               </CustView>
               {/* this is remove button */}
               <CustView
-                onpress={() => AbsentUser()}
+                onpress={() => {
+                  Alert.alert('Alert!!', 'Are you sure you were absent!', [
+                    {text: 'Cancel', style: 'cancel'},
+                    {text: 'OK', onPress: () => AbsentUser()},
+                  ]);
+                }}
                 height="40px"
                 width="40px"
                 borR={50}
@@ -201,7 +227,7 @@ export const EditData = () => {
                 </CusT>
                 <CustView
                   onpress={() => {
-                    showTimePicker();
+                    showTimePicker(startTime.length > 1 ? startTime : 'start');
                     onactiveStart(true);
                   }}
                   border="1px solid grey"
@@ -230,7 +256,7 @@ export const EditData = () => {
 
                 <CustView
                   onpress={() => {
-                    showTimePicker();
+                    showTimePicker(overTime.length > 1 ? overTime : 'over');
                     onactiveStart(false);
                   }}
                   border="1px solid grey"
@@ -248,6 +274,7 @@ export const EditData = () => {
                 <DateTimePickerModal
                   isVisible={isTimePickerVisible}
                   mode="time"
+                  date={DefaultTime}
                   onConfirm={handleTimeConfirm}
                   onCancel={hideTimePicker}
                 />

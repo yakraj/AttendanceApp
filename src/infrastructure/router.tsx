@@ -9,6 +9,8 @@ import {Retrieve} from '../features/retrieve.data';
 import {Table} from '../features/table';
 import {MainProvider} from '../services/main.context';
 import {EditData} from '../features/editdata';
+import {EditUser} from '../features/edit.user';
+import {DutyAdd} from '../features/dutyadd';
 const Router = (): JSX.Element => {
   const Stack = createNativeStackNavigator();
   return (
@@ -25,6 +27,8 @@ const Router = (): JSX.Element => {
           <Stack.Screen name="addperson" component={AddPerson} />
           <Stack.Screen name="alldata" component={AllData} />
           <Stack.Screen name="profile" component={Profile} />
+          <Stack.Screen name="editUser" component={EditUser} />
+          <Stack.Screen name="dutyadd" component={DutyAdd} />
         </Stack.Navigator>
       </NavigationContainer>
     </MainProvider>

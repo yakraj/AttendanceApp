@@ -3,6 +3,26 @@ import React, {createContext, useEffect, useState} from 'react';
 // Create the context object
 export const MainContext = createContext(null);
 //
+// random character creator
+export function generateRandomString(length: number) {
+  let result = '';
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters.charAt(randomIndex);
+  }
+
+  return result;
+}
+// date and time declearation
+export const date = new Date();
+export const currYear = date.getFullYear();
+export const currMonth = date
+  .toLocaleString('default', {month: 'short'})
+  .toLowerCase();
+export const currDay = date.getDate();
 // Create the provider component
 export const MainProvider = ({children}) => {
   const [ActiveUser, setActiveUser] = useState<string>();
@@ -15,47 +35,43 @@ export const MainProvider = ({children}) => {
   const [Esic, setEsic] = useState<number>(0);
   const [ExCharge, setExCharge] = useState<number>(0);
   // thi state for firsttime ever the app gets initilized
-  const [initilized, oninitilized] = useState<boolean>(false);
-  const date = new Date();
-  const currYear = date.getFullYear();
-  const currMonth = date
-    .toLocaleString('default', {month: 'short'})
-    .toLowerCase();
-  const currDay = date.getDate();
+  const [initilized, oninitilized] = useState<boolean>(true);
 
   // Set the context value using an object
-  const [userData, onUserData] = useState([]);
+  const [userData, onUserData] = useState([
+    {
+      company: 'dynamic mega tech engineering.',
+      name: 'yakraj pariyar',
+      salph: 74,
+      pf: 12,
+      esic: 250,
+      exCharge: 200,
+      userId: 'yakraj1234',
+    },
+    {
+      company: 'autofit industrial limited.',
+      name: 'tulsi pariyar',
+      salph: 54,
+      pf: 0,
+      esic: 250,
+      exCharge: 0,
+      userId: 'tulsi1234',
+    },
+    {
+      company: 'crown closures',
+      name: 'Dolma pariyar',
+      salph: 54,
+      pf: 12,
+      esic: 250,
+      exCharge: 0,
+      userId: 'dolma1234',
+    },
+  ]);
 
   const ChangeUser = (userId: string) => {
     setActiveUser(userId);
   };
   const [tableData, onTableData] = useState([
-    // [
-    //   {
-    //     name: 'yakraj pariyar',
-    //     salph: 74,
-    //     pf: 12,
-    //     esic: 250,
-    //     exCharge: 200,
-    //     userId: 'yakraj1234',
-    //   },
-    //   {
-    //     name: 'tulsi pariyar',
-    //     salph: 54,
-    //     pf: 0,
-    //     esic: 250,
-    //     exCharge: 0,
-    //     userId: 'tulsi1234',
-    //   },
-    //   {
-    //     name: 'Dolma pariyar',
-    //     salph: 54,
-    //     pf: 12,
-    //     esic: 250,
-    //     exCharge: 0,
-    //     userId: 'dolma1234',
-    //   },
-    // ]
     {
       year: 2023,
       months: {
@@ -138,21 +154,9 @@ export const MainProvider = ({children}) => {
 
   //  for create new user
 
-  function generateRandomString(length: number) {
-    let result = '';
-    const characters =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      result += characters.charAt(randomIndex);
-    }
-
-    return result;
-  }
-
   const CreateUser = (
     name: string,
+    Company: string,
     salph: string,
     pf: string,
     esic: string,
@@ -161,6 +165,7 @@ export const MainProvider = ({children}) => {
     let userName = name + generateRandomString(4);
     let TempUser = {
       name: '',
+      company: '',
       salph: 0,
       pf: 0,
       esic: 0,
@@ -168,6 +173,7 @@ export const MainProvider = ({children}) => {
       userId: '',
     };
     TempUser.name = name;
+    TempUser.company = Company;
     TempUser.salph = Number(salph);
     TempUser.pf = Number(pf);
     TempUser.esic = Number(esic);
@@ -201,6 +207,32 @@ export const MainProvider = ({children}) => {
     }
     onTableData(tempTable);
   };
+  const UpdateUser = (
+    name: string,
+    Company: string,
+    salph: string,
+    pf: string,
+    esic: string,
+    exCharge: string,
+    user: string,
+  ) => {
+    let TempUsers = userData;
+    let TempUser = TempUsers.find(x => x.userId === user);
+    TempUser.name = TempUser.name !== name ? name : TempUser.name;
+    TempUser.company =
+      TempUser.company !== Company ? Company : TempUser.company;
+    TempUser.salph =
+      TempUser.salph !== Number(salph) ? Number(salph) : TempUser.salph;
+    TempUser.pf = TempUser.pf !== Number(pf) ? Number(pf) : TempUser.pf;
+    TempUser.esic =
+      TempUser.esic !== Number(esic) ? Number(esic) : TempUser.esic;
+    TempUser.exCharge =
+      TempUser?.exCharge !== Number(exCharge)
+        ? Number(exCharge)
+        : TempUser.exCharge;
+
+    onUserData(TempUsers);
+  };
 
   // data checker and retriever
   useEffect(() => {
@@ -221,7 +253,6 @@ export const MainProvider = ({children}) => {
         const MonthChecker = YearChecker.months.hasOwnProperty(currMonth);
         let findTargetObject = tempTable.find(obj => obj.year === currYear);
         if (MonthChecker) {
-          console.log('Month is added there');
           // while the month data is exist then it will find the yesterdays data is added or not
           // it will loop throught the users and search, same users data added or not
           const today = new Date();
@@ -238,7 +269,6 @@ export const MainProvider = ({children}) => {
               entry => entry.userId === user && entry.day === yesterdayDate,
             );
             if (hasEntry) {
-              console.log('has entry is true');
               return true;
             } else {
               findTargetObject.months[yesterdayMonth.toLowerCase()].push({
@@ -254,7 +284,6 @@ export const MainProvider = ({children}) => {
               onTableData(tempTable);
             }
           };
-          // console.log(yesterdayMonth);
           // console.log(findTargetObject.months[yesterdayMonth]);
 
           for (let i = 0; i < userData.length; i++) {
@@ -267,7 +296,6 @@ export const MainProvider = ({children}) => {
         }
       }
     } else {
-      console.log('initilized is false');
       onTableData([
         ...tableData,
         {
@@ -280,7 +308,9 @@ export const MainProvider = ({children}) => {
       oninitilized(true);
     }
   }, []);
-  console.log(tableData);
+
+  // Create today data
+
   // export data
   const contextValue = {
     ActiveUser,
@@ -303,6 +333,7 @@ export const MainProvider = ({children}) => {
     CurMOD,
     setCurMOD,
     onUserData,
+    UpdateUser,
   };
 
   useEffect(() => {

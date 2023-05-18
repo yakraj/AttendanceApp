@@ -265,13 +265,14 @@ CustView.defaultProps = {
 };
 type NMorphProps = PropsWithChildren<{
   height?: number;
-  width?: string;
+  width?: number;
   borR: number;
   TC?: string;
   BC?: string;
   bcC?: string;
   jus?: string;
   ali?: string;
+  ofl?: string;
   inn?: boolean;
 }>;
 /* eslint-disable deprecation/deprecation */
@@ -286,6 +287,7 @@ export const NMorph = ({
   inn,
   jus,
   ali,
+  ofl,
 }: NMorphProps) => {
   return (
     <Neomorph
@@ -296,9 +298,10 @@ export const NMorph = ({
         shadowOpacity: 0.6,
         shadowRadius: 10,
         backgroundColor: bcC ?? '#ECF0F3',
-        width: '100%',
+        width: width ?? 100,
         height: height ?? 100,
         borderRadius: borR,
+        overflow: ofl,
         justifyContent: jus ?? 'center',
         alignItems: ali ?? 'center',
       }}>

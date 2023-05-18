@@ -33,7 +33,7 @@ export const Retrieve = () => {
   );
   return (
     <>
-      <Topbar route={TopObject} title="FEB/2023" isTable />
+      <Topbar route={TopObject} title={`${month + '/' + year}`} isTable />
 
       <CustView padT={20} bcC="#D9D9D9" height="100%">
         <CustView height="auto" width="100%">
@@ -41,9 +41,7 @@ export const Retrieve = () => {
           <CustView position="absolute" Left="35" Top="-25">
             <MyImage source={require('../../assects/jobag.png')} />
           </CustView>
-          <CustView position="absolute" Left="20" Top="85">
-            <MyImage source={require('../../assects/notification.png')} />
-          </CustView>
+
           <CustView position="absolute" Right="55" Top="15">
             <MyImage
               style={{width: 85, height: 85, marginBottom: -10}}

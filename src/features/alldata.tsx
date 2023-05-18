@@ -92,7 +92,7 @@ const MonthNames = ({month, data, activeYear}: monthType) => {
 export const AllData = () => {
   const [Months, onMonths] = useState([]);
   const [activeYear, onactiveYear] = useState([]);
-  const {tableData} = useContext(MainContext);
+  const {tableData, ActiveUser} = useContext(MainContext);
 
   useEffect(() => {
     onMonths(tableData[0].months);
@@ -129,7 +129,7 @@ export const AllData = () => {
         <CustView width="100%" jus="space-around" fdr="row" fwr="wrap">
           {/* all twelve month names pass with month prop to MonthNames component  */}
           {Object.keys(Months).map((x, i) => {
-            return (
+            return Months[x].find(x => x.userId === ActiveUser) ? (
               <MonthNames
                 activeYear={activeYear}
                 key={i}
@@ -137,7 +137,7 @@ export const AllData = () => {
                 Months={Months}
                 month={x}
               />
-            );
+            ) : null;
           })}
         </CustView>
       </CustView>

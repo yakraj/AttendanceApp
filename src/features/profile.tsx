@@ -2,9 +2,9 @@ import CusT from '../components/custom.text';
 import React, {useContext, useState} from 'react';
 import {ImageBackground, ScrollView, Alert} from 'react-native';
 import {Topbar} from '../components/topbar';
-import {CustView, MyImage} from '../components/devider';
+import {CustView, MyImage, NMorph} from '../components/devider';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {MainContext} from '../services/main.context';
+import {MainContext, currMonth, currYear} from '../services/main.context';
 
 type daataa = {
   name: string;
@@ -15,6 +15,7 @@ type daataa = {
 };
 
 const OtherUser = ({name, salary, pf, userId, salph}: daataa) => {
+  const navigation = useNavigation();
   const [UserWork, setUserWork] = useState<any>([]);
   const {
     tableData,
@@ -29,7 +30,9 @@ const OtherUser = ({name, salary, pf, userId, salph}: daataa) => {
   useFocusEffect(
     React.useCallback(() => {
       // find all objects inside tableData array where userId is ActiveUser
-      const find = tableData.filter(id => id.userId === userId);
+      const FindYear = tableData.find(x => (x.year = currYear));
+      const FindMonth = FindYear.months[currMonth];
+      const find = FindMonth.filter(id => id.userId === userId);
       setUserWork(find);
     }, [tableData, ActiveUser, userData]),
   );
@@ -49,21 +52,42 @@ const OtherUser = ({name, salary, pf, userId, salph}: daataa) => {
         }));
 
         Alert.alert(
-          'Confirmation',
-          'Are you sure to Delete this User?',
+          'Alert!',
+          'What would you like to do with this?',
           [
             {
               text: 'Cancel',
               style: 'cancel',
             },
             {
-              text: 'Confirm',
+              text: 'Edit',
               onPress: () => {
+                navigation.navigate('editUser', {user: userId});
+              },
+            },
+            {
+              text: 'Delete',
+              onPress: () => {
+                Alert.alert(
+                  'Confirmation',
+                  "Are you sure to delete this user's data?",
+                  [
+                    {
+                      text: 'Cancel',
+                      style: 'cancel',
+                    },
+                    {
+                      text: 'OK',
+                      onPress: () => {
+                        onUserData(NewData);
+                        onTableData(filteredArray);
+                        // Add your logic here
+                        setActiveUser(userData[0].userId);
+                      },
+                    },
+                  ],
+                );
                 // Code to execute when the user confirms
-                onUserData(NewData);
-                onTableData(filteredArray);
-                // Add your logic here
-                setActiveUser(userData[0].userId);
               },
             },
           ],
@@ -120,7 +144,6 @@ export const Profile = () => {
   const [User, setUser] = React.useState<any>([]);
   const [RemUser, setRemUser] = React.useState<any>([]);
   const [UserWork, setUserWork] = React.useState<any>([]);
-
   useFocusEffect(
     React.useCallback(() => {
       // find all objects inside tableData array where userId is ActiveUser
@@ -139,19 +162,20 @@ export const Profile = () => {
         resizeMode="contain"
         style={{width: '100%', height: 180}}
         source={require('../../assects/profilevector.png')}>
-        <CustView Top={10} Right="100" position="absolute">
-          <CusT
-            weight="bold"
-            size={50}
-            // position="absolute"
-
-            color="grey">
-            {User[0] &&
-              UserWork.reduce((acc, curr) => {
-                return acc + curr.totalHours;
-              }, 0)}
-          </CusT>
-          <CusT color="blue">Hours</CusT>
+        <CustView
+          touchable
+          tofl
+          onpress={() => navigation.navigate('editUser', {user: ActiveUser})}
+          position="absolute"
+          Top="20"
+          Right="10">
+          <NMorph TC="pink" borR={50} height={60} width={60}>
+            <MyImage
+              resizeMode="contain"
+              style={{width: 50}}
+              source={require('../../assects/setting.png')}
+            />
+          </NMorph>
         </CustView>
 
         <CustView marB={-10} position="absolute" Top="35" Left="35">
@@ -165,6 +189,14 @@ export const Profile = () => {
         </CustView>
       </ImageBackground>
       <CustView>
+        <CustView fdr="row" ali="flex-start" width="90%">
+          <CusT size={20} weight="bold" color="grey">
+            Company
+          </CusT>
+          <CusT size={20} color="grey">
+            : {User[0] && User[0].company}
+          </CusT>
+        </CustView>
         <CustView fdr="row" ali="flex-start" width="90%">
           <CusT size={20} weight="bold" color="grey">
             Salary Per Hour
