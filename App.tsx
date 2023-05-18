@@ -5,6 +5,7 @@ import {ImageBackground} from 'react-native';
 import CusT from './src/components/custom.text';
 import {MainContext} from './src/services/main.context';
 import {useFocusEffect} from '@react-navigation/native';
+import NotificationManager from './src/components/notification.manage';
 type CustBR = {
   title: string;
   data: string;
@@ -51,6 +52,11 @@ function App({navigation}): JSX.Element {
   const {ActiveUser, tableData, userData, CurMOD} = useContext(MainContext);
   const [User, setUser] = React.useState<any>([]);
   const [UserWork, setUserWork] = React.useState<any>([]);
+
+  // this useEffect will manage the push notification with that
+  useEffect(() => {
+    NotificationManager.startBackgroundTask();
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -159,13 +165,24 @@ function App({navigation}): JSX.Element {
           <CusT size={30} weight="bold" color="grey">
             Salary
           </CusT>
+          <CusT size={10} weight="regular" color="grey">
+            After Cutting all charges (pf,esic,charges)
+          </CusT>
           <CustView fdr="row" ali="flex-start">
             <MyImage source={require('./assects/rs.png')} />
             <CusT size={60} weight="bold" color="grey">
               {User[0] &&
                 UserWork.reduce((acc, curr) => {
                   return acc + curr.totalHours;
-                }, 0) * User[0].salph}
+                }, 0) *
+                  User[0].salph -
+                  (UserWork.filter(day => day.totalHours >= 4).length *
+                    8 *
+                    User[0].salph *
+                    User[0].pf) /
+                    100 -
+                  User[0].esic -
+                  User[0].exCharge}
             </CusT>
           </CustView>
           <CustView fdr="row">
@@ -175,7 +192,7 @@ function App({navigation}): JSX.Element {
             <CusT size={15} color="grey">
               {'   Rs. '}
               {User[0] &&
-                (UserWork.filter(day => day.totalHours > 4).length *
+                (UserWork.filter(day => day.totalHours >= 8).length *
                   8 *
                   User[0].salph *
                   User[0].pf) /

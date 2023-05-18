@@ -262,32 +262,65 @@ export const MainProvider = ({children}) => {
             month: 'long',
           }); // Get the month name
           const yesterdayDate = yesterday.getDate(); // Get the day of the month
-          const YesterDayDataChecker = user => {
+          const MissingFiller = user => {
+            const hasMissing =
+              findTargetObject.months[currMonth].length < Number(currDay) - 1;
+
+            if (hasMissing) {
+              let tempMonth = findTargetObject.months[currMonth];
+              const filledMonths = [];
+              for (let i = 0; i < tempMonth.length; i++) {
+                filledMonths.push(tempMonth[i]);
+                if (i < tempMonth.length - 1) {
+                  const currentNumber = tempMonth[i].number;
+                  const nextNumber = tempMonth[i + 1].number;
+
+                  const diff = nextNumber - currentNumber;
+
+                  if (diff > 1) {
+                    for (let j = 1; j < diff; j++) {
+                      filledMonths.push({
+                        day: currentNumber + j,
+                        startTime: '-',
+                        overTime: '-',
+                        leaveTime: 0,
+                        totalHours: 0,
+                        remarks: '-',
+                        userId: user,
+                        uniqId: yesterdayMonth + generateRandomString(5),
+                      });
+                    }
+                  }
+                }
+              }
+              findTargetObject.months[currMonth] = filledMonths;
+            }
+
             const hasEntry = findTargetObject.months[
               yesterdayMonth.toLowerCase()
             ].some(
               entry => entry.userId === user && entry.day === yesterdayDate,
             );
-            if (hasEntry) {
-              return true;
-            } else {
-              findTargetObject.months[yesterdayMonth.toLowerCase()].push({
-                day: yesterdayDate,
-                startTime: '-',
-                overTime: '-',
-                leaveTime: 0,
-                totalHours: 0,
-                remarks: 'unfilled',
-                userId: user,
-                uniqId: yesterdayMonth + generateRandomString(5),
-              });
-              onTableData(tempTable);
-            }
+            // if (hasEntry) {
+            //   return true;
+            // } else {
+            //   findTargetObject.months[yesterdayMonth.toLowerCase()].push({
+            //     day: yesterdayDate,
+            //     startTime: '-',
+            //     overTime: '-',
+            //     leaveTime: 0,
+            //     totalHours: 0,
+            //     remarks: 'unfilled',
+            //     userId: user,
+            //     uniqId: yesterdayMonth + generateRandomString(5),
+            //   });
+            //   onTableData(tempTable);
+            // }
           };
           // console.log(findTargetObject.months[yesterdayMonth]);
 
           for (let i = 0; i < userData.length; i++) {
-            YesterDayDataChecker(userData[i].userId);
+            MissingFiller(userData[i].userId);
           }
         } else {
           // while the month is not exist it will add month array

@@ -12,9 +12,19 @@ type daataa = {
   pf: number;
   userId: string;
   salph: number;
+  esic: number;
+  exCharge: number;
 };
 
-const OtherUser = ({name, salary, pf, userId, salph}: daataa) => {
+const OtherUser = ({
+  name,
+  salary,
+  pf,
+  userId,
+  salph,
+  esic,
+  exCharge,
+}: daataa) => {
   const navigation = useNavigation();
   const [UserWork, setUserWork] = useState<any>([]);
   const {
@@ -116,7 +126,11 @@ const OtherUser = ({name, salary, pf, userId, salph}: daataa) => {
             <CusT>
               {UserWork.reduce((acc, curr) => {
                 return acc + curr.totalHours;
-              }, 0) * salph}
+              }, 0) *
+                salph -
+                pf -
+                esic -
+                exCharge}
             </CusT>
           </CustView>
           <CustView>
@@ -238,6 +252,8 @@ export const Profile = () => {
                 userId={x.userId}
                 name={x.name}
                 salph={x.salph}
+                esic={x.esic}
+                exCharge={x.exCharge}
                 salary={454}
                 pf={x.pf}
                 key={i}
