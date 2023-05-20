@@ -36,7 +36,7 @@ const TableContent = ({text, width, height, title}: tableCtype) => {
 export const Table = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const {tableData, CurMOD, ActiveUser} = useContext(MainContext);
+  const {tableData, CurMOD, userData, ActiveUser} = useContext(MainContext);
   const {year, month, userId}: {year: number; month: string; userId: string} =
     route.params;
   const [TableData, onTableData] = useState<any>([]);
@@ -57,9 +57,8 @@ export const Table = () => {
   );
 
   const ExportPdf = {
-    name: 'yakraj',
-    salary: 1500,
     table: TableData,
+    user: userData.filter(x => x.userId === ActiveUser),
   };
   const renderItem = ({item}: renderType) => (
     <CustView

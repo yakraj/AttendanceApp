@@ -118,7 +118,7 @@ export const MainProvider = ({children}) => {
         ],
         may: [
           {
-            day: '01',
+            day: 1,
             startTime: '-',
             overTime: '-',
             leaveTime: 0,
@@ -128,7 +128,7 @@ export const MainProvider = ({children}) => {
             uniqId: 'may01ewfwe55',
           },
           {
-            day: '02',
+            day: 18,
             startTime: '7:00 AM',
             overTime: '7:00 PM',
             leaveTime: 0,
@@ -138,7 +138,7 @@ export const MainProvider = ({children}) => {
             uniqId: 'may01ehhg',
           },
           {
-            day: '02',
+            day: 2,
             startTime: '7:00 AM',
             overTime: '7:00 PM',
             leaveTime: 0,
@@ -257,71 +257,112 @@ export const MainProvider = ({children}) => {
           // it will loop throught the users and search, same users data added or not
           const today = new Date();
           const yesterday = new Date(today); // Create a new date object with the same value as today
+
           yesterday.setDate(today.getDate() - 1); // Subtract 1 day from the date
           const yesterdayMonth = yesterday.toLocaleString('default', {
             month: 'long',
           }); // Get the month name
           const yesterdayDate = yesterday.getDate(); // Get the day of the month
+          let ThisMonth = findTargetObject.months[currMonth];
+          let TempMonthData = [];
+          TempMonthData.length = 0;
           const MissingFiller = user => {
-            const hasMissing =
-              findTargetObject.months[currMonth].length < Number(currDay) - 1;
+            // this is for yesterday data finder
+            // if (yesterdayMonth.toLowerCase() === currMonth) {
+            //   const hasEntry = findTargetObject.months[
+            //     yesterdayMonth.toLowerCase()
+            //   ].some(
+            //     entry => entry.userId === user && entry.day === yesterdayDate,
+            //   );
+            //   if (hasEntry) {
+            //     return true;
+            //   } else {
+            //     findTargetObject.months[yesterdayMonth.toLowerCase()].push({
+            //       day: yesterdayDate,
+            //       startTime: '-',
+            //       overTime: '-',
+            //       leaveTime: 0,
+            //       totalHours: 0,
+            //       remarks: 'unfilled',
+            //       userId: user,
+            //       uniqId: yesterdayMonth + generateRandomString(5),
+            //     });
+            //     onTableData(tempTable);
+            //   }
+            // }
+            let UserData = ThisMonth.filter(x => x.userId === user);
+
+            const hasMissing = UserData.length < Number(currDay) - 1;
 
             if (hasMissing) {
-              let tempMonth = findTargetObject.months[currMonth];
+              let tempMonth = UserData;
               const filledMonths = [];
-              for (let i = 0; i < tempMonth.length; i++) {
-                filledMonths.push(tempMonth[i]);
-                if (i < tempMonth.length - 1) {
-                  const currentNumber = tempMonth[i].number;
-                  const nextNumber = tempMonth[i + 1].number;
 
-                  const diff = nextNumber - currentNumber;
+              var largestNumber = tempMonth.some(function (num) {
+                return num.day === new Date().getDate();
+              })
+                ? new Date().getDate()
+                : new Date().getDate() - 1;
 
-                  if (diff > 1) {
-                    for (let j = 1; j < diff; j++) {
-                      filledMonths.push({
-                        day: currentNumber + j,
-                        startTime: '-',
-                        overTime: '-',
-                        leaveTime: 0,
-                        totalHours: 0,
-                        remarks: '-',
-                        userId: user,
-                        uniqId: yesterdayMonth + generateRandomString(5),
-                      });
-                    }
-                  }
+              filledMonths.length = 0;
+
+              // for (let i = 0; i < tempMonth.length; i++) {
+              //   filledMonths.push(tempMonth[i]);
+              //   if (i < tempMonth.length - 1) {
+              //     const currentNumber = tempMonth[i].day;
+              //     const nextNumber = tempMonth[i + 1].day;
+
+              //     const diff = nextNumber - currentNumber;
+
+              //     if (diff > 1) {
+              //       for (let j = 1; j < diff; j++) {
+              //         filledMonths.push({
+              //           day: currentNumber + j,
+              //           startTime: '-',
+              //           overTime: '-',
+              //           leaveTime: 0,
+              //           totalHours: 0,
+              //           remarks: '-',
+              //           userId: user,
+              //           uniqId: yesterdayMonth + generateRandomString(5),
+              //         });
+              //       }
+              //     }
+              //   }
+              // }
+
+              for (var i = 1; i <= largestNumber; i++) {
+                let existfinder = tempMonth.find(function (num) {
+                  return num.day === i;
+                });
+
+                if (existfinder) {
+                  filledMonths.push(existfinder);
+                } else {
+                  filledMonths.push({
+                    day: i,
+                    startTime: '-',
+                    overTime: '-',
+                    leaveTime: 0,
+                    totalHours: 0,
+                    remarks: '-',
+                    userId: user,
+                    uniqId: yesterdayMonth + generateRandomString(5),
+                  });
                 }
               }
-              findTargetObject.months[currMonth] = filledMonths;
+
+              // findTargetObject.months[currMonth] = filledMonths;
+              // console.log('this is flled', filledMonths);
+              TempMonthData = [...TempMonthData, ...filledMonths];
             }
-
-            const hasEntry = findTargetObject.months[
-              yesterdayMonth.toLowerCase()
-            ].some(
-              entry => entry.userId === user && entry.day === yesterdayDate,
-            );
-            // if (hasEntry) {
-            //   return true;
-            // } else {
-            //   findTargetObject.months[yesterdayMonth.toLowerCase()].push({
-            //     day: yesterdayDate,
-            //     startTime: '-',
-            //     overTime: '-',
-            //     leaveTime: 0,
-            //     totalHours: 0,
-            //     remarks: 'unfilled',
-            //     userId: user,
-            //     uniqId: yesterdayMonth + generateRandomString(5),
-            //   });
-            //   onTableData(tempTable);
-            // }
           };
-          // console.log(findTargetObject.months[yesterdayMonth]);
-
           for (let i = 0; i < userData.length; i++) {
             MissingFiller(userData[i].userId);
           }
+          findTargetObject.months[currMonth] = TempMonthData.length
+            ? TempMonthData
+            : ThisMonth;
         } else {
           // while the month is not exist it will add month array
           findTargetObject.months[currMonth.toLowerCase()] = currMonth;
