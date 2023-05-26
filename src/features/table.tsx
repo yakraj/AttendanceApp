@@ -40,6 +40,7 @@ export const Table = () => {
   const {year, month, userId}: {year: number; month: string; userId: string} =
     route.params;
   const [TableData, onTableData] = useState<any>([]);
+
   const FindCorrect = () => {
     let getYearData = tableData.filter((x: any) => x.year === year);
     let getMonthData = getYearData[0].months[month];

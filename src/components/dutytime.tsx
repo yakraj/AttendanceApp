@@ -4,8 +4,7 @@ import moment from 'moment';
 import {CustView, NMorph} from '../components/devider';
 import {TextInput, Alert} from 'react-native';
 import React, {useEffect, useState, useContext} from 'react';
-import {Topbar} from '../components/topbar';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {
   MainContext,
@@ -18,14 +17,21 @@ type dutydatatype = {
   id: string;
 };
 export const DutyTime = ({id}: dutydatatype) => {
-  const {tableData, onTableData, userData} = useContext(MainContext);
+  const {
+    tableData,
+    onTableData,
+    userData,
+    startTime,
+    onstartTime,
+    overTime,
+    onoverTime,
+    Remarks,
+    onRemarks,
+  } = useContext(MainContext);
 
   const navigation = useNavigation();
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
-  const [startTime, onstartTime] = useState('');
-  const [overTime, onoverTime] = useState('');
   const [passHours, onpassHours] = useState('');
-  const [Remarks, onRemarks] = useState('');
   const [activeStart, onactiveStart] = useState(true);
 
   //   this is data of user
@@ -136,14 +142,14 @@ export const DutyTime = ({id}: dutydatatype) => {
 
   // Absent user
   const AbsentUser = () => {
-    let tempTable = tableData;
+    let tempTable = [...tableData];
     let tempObject = {
       day: currDay,
-      startTime: startTime,
-      overTime: overTime,
-      leaveTime: Number(passHours),
-      totalHours: TimeDifference(),
-      remarks: Remarks ? Remarks : 'Present',
+      startTime: '-',
+      overTime: '-',
+      leaveTime: '-',
+      totalHours: 0,
+      remarks: Remarks ? Remarks : 'Absent',
       userId: currentUser.userId,
       uniqId: currMonth + generateRandomString(5),
     };
@@ -165,7 +171,7 @@ export const DutyTime = ({id}: dutydatatype) => {
       userId: currentUser.userId,
       uniqId: currMonth + generateRandomString(5),
     };
-    let tempTable = tableData;
+    let tempTable = [...tableData];
     let ThisYear = tempTable.find(x => x.year === DefaultTime.getFullYear());
     ThisYear.months[currMonth].push(tempObject);
     onupdaTer(new Date());

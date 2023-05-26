@@ -6,7 +6,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {PermissionsAndroid, Alert} from 'react-native';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import RNFS from 'react-native-fs';
-import {currMonth} from '../services/main.context';
+import {currMonth, currYear} from '../services/main.context';
 
 // import Share from 'react-native-share';
 interface Props {
@@ -138,7 +138,7 @@ export const Topbar = ({title, isTable, route, pdf}: Props) => {
           ${user[0].company}
         </h1>
         <h1 style="margin: 0px; font-weight: normal; font-size: 1.3rem;">
-          Monthly Salary Details
+          ${currMonth + ' ' + currYear} month salary details
         </h1>
       </div>
       <div

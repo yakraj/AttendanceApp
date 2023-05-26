@@ -1,5 +1,5 @@
 import React, {createContext, useEffect, useState} from 'react';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // Create the context object
 export const MainContext = createContext(null);
 //
@@ -34,8 +34,15 @@ export const MainProvider = ({children}) => {
   const [Pf, setPf] = useState<number>(0);
   const [Esic, setEsic] = useState<number>(0);
   const [ExCharge, setExCharge] = useState<number>(0);
+
+  // these data are for create information
+  const [startTime, onstartTime] = useState('');
+  const [overTime, onoverTime] = useState('');
+  const [Remarks, onRemarks] = useState('');
   // thi state for firsttime ever the app gets initilized
-  const [initilized, oninitilized] = useState<boolean>(true);
+  const [initilized, oninitilized] = useState<boolean>(false);
+  const [Retrieved, onRetrieved] = useState<boolean>(false);
+  const [RetrieveUser, onRetrieveUser] = useState<boolean>(false);
 
   // Set the context value using an object
   const [userData, onUserData] = useState([
@@ -206,6 +213,7 @@ export const MainProvider = ({children}) => {
       }
     }
     onTableData(tempTable);
+    setActiveUser(userName);
   };
   const UpdateUser = (
     name: string,
@@ -236,9 +244,16 @@ export const MainProvider = ({children}) => {
 
   // data checker and retriever
   useEffect(() => {
+    if (!Retrieved) {
+      return;
+    }
+
+    console.log('step: 1, entered inside useEffect');
     const YearChecker = tableData.find(x => (x.year = currYear));
-    if (initilized) {
+    if (!initilized) {
+      console.log('step: 2, Not initialized');
       if (!YearChecker) {
+        console.log('step: 3, Year doesnot exist');
         onTableData([
           ...tableData,
           {
@@ -248,11 +263,14 @@ export const MainProvider = ({children}) => {
             },
           },
         ]);
+        return;
       } else {
-        let tempTable = tableData;
+        console.log('step: 4, Year is there existing');
+        let tempTable = [...tableData];
         const MonthChecker = YearChecker.months.hasOwnProperty(currMonth);
         let findTargetObject = tempTable.find(obj => obj.year === currYear);
         if (MonthChecker) {
+          console.log('step: 4, Month is existing');
           // while the month data is exist then it will find the yesterdays data is added or not
           // it will loop throught the users and search, same users data added or not
           const today = new Date();
@@ -267,34 +285,12 @@ export const MainProvider = ({children}) => {
           let TempMonthData = [];
           TempMonthData.length = 0;
           const MissingFiller = user => {
-            // this is for yesterday data finder
-            // if (yesterdayMonth.toLowerCase() === currMonth) {
-            //   const hasEntry = findTargetObject.months[
-            //     yesterdayMonth.toLowerCase()
-            //   ].some(
-            //     entry => entry.userId === user && entry.day === yesterdayDate,
-            //   );
-            //   if (hasEntry) {
-            //     return true;
-            //   } else {
-            //     findTargetObject.months[yesterdayMonth.toLowerCase()].push({
-            //       day: yesterdayDate,
-            //       startTime: '-',
-            //       overTime: '-',
-            //       leaveTime: 0,
-            //       totalHours: 0,
-            //       remarks: 'unfilled',
-            //       userId: user,
-            //       uniqId: yesterdayMonth + generateRandomString(5),
-            //     });
-            //     onTableData(tempTable);
-            //   }
-            // }
             let UserData = ThisMonth.filter(x => x.userId === user);
 
             const hasMissing = UserData.length < Number(currDay) - 1;
 
             if (hasMissing) {
+              console.log('step: 5, There is some missing data');
               let tempMonth = UserData;
               const filledMonths = [];
 
@@ -305,31 +301,6 @@ export const MainProvider = ({children}) => {
                 : new Date().getDate() - 1;
 
               filledMonths.length = 0;
-
-              // for (let i = 0; i < tempMonth.length; i++) {
-              //   filledMonths.push(tempMonth[i]);
-              //   if (i < tempMonth.length - 1) {
-              //     const currentNumber = tempMonth[i].day;
-              //     const nextNumber = tempMonth[i + 1].day;
-
-              //     const diff = nextNumber - currentNumber;
-
-              //     if (diff > 1) {
-              //       for (let j = 1; j < diff; j++) {
-              //         filledMonths.push({
-              //           day: currentNumber + j,
-              //           startTime: '-',
-              //           overTime: '-',
-              //           leaveTime: 0,
-              //           totalHours: 0,
-              //           remarks: '-',
-              //           userId: user,
-              //           uniqId: yesterdayMonth + generateRandomString(5),
-              //         });
-              //       }
-              //     }
-              //   }
-              // }
 
               for (var i = 1; i <= largestNumber; i++) {
                 let existfinder = tempMonth.find(function (num) {
@@ -353,8 +324,8 @@ export const MainProvider = ({children}) => {
               }
 
               // findTargetObject.months[currMonth] = filledMonths;
-              // console.log('this is flled', filledMonths);
               TempMonthData = [...TempMonthData, ...filledMonths];
+              return;
             }
           };
           for (let i = 0; i < userData.length; i++) {
@@ -362,14 +333,19 @@ export const MainProvider = ({children}) => {
           }
           findTargetObject.months[currMonth] = TempMonthData.length
             ? TempMonthData
-            : ThisMonth;
+            : findTargetObject.months[currMonth];
+          return;
         } else {
+          console.log('step: 6, Month doesnot exist');
           // while the month is not exist it will add month array
           findTargetObject.months[currMonth.toLowerCase()] = currMonth;
           onTableData(tempTable);
+          return;
         }
+        return;
       }
     } else {
+      console.log('step: 3, Add iniliazation data');
       onTableData([
         ...tableData,
         {
@@ -380,8 +356,9 @@ export const MainProvider = ({children}) => {
         },
       ]);
       oninitilized(true);
+      return;
     }
-  }, []);
+  }, [Retrieved, tableData]);
 
   // Create today data
 
@@ -408,14 +385,215 @@ export const MainProvider = ({children}) => {
     setCurMOD,
     onUserData,
     UpdateUser,
+    startTime,
+    onstartTime,
+    overTime,
+    onoverTime,
+    Remarks,
+    onRemarks,
   };
+  // +++++++++++++++-------------------+++++++++++++++----------------------+++++++++++++++++++++-------------------
+  // from here i'll be using the async storage to store all data
+
+  // store the initialization
+
+  const storeInilitization = async value => {
+    try {
+      await AsyncStorage.setItem('@initilize_Key', JSON.stringify(value));
+    } catch (error) {
+      console.log('Error storing boolean value:', error);
+    }
+  };
+
+  // store active username
+  const storeActiveUser = async value => {
+    try {
+      await AsyncStorage.setItem('@active_user_Key', value);
+    } catch (e) {
+      // saving error
+    }
+  };
+
+  // store start time
+  const storeStartTime = async value => {
+    try {
+      await AsyncStorage.setItem('@start_time_Key', value);
+    } catch (e) {
+      // saving error
+    }
+  };
+  // store over time
+  const storeOverTime = async value => {
+    try {
+      await AsyncStorage.setItem('@over_time_key', value);
+    } catch (e) {
+      // saving error
+    }
+  };
+  // store remarks
+  const storeRemarks = async value => {
+    try {
+      await AsyncStorage.setItem('@Remarks_key', value);
+    } catch (e) {
+      // saving error
+    }
+  };
+  // storing Tabledata
+  const storeTableData = async value => {
+    console.log('it is executing');
+    try {
+      await AsyncStorage.setItem('@table_data_Key', JSON.stringify(value));
+      // const jsonValue = JSON.stringify(value);
+      // await AsyncStorage.setItem('@table_data_Key', jsonValue);
+    } catch (e) {
+      // saving error
+    }
+  };
+  // storing userData
+  const storeUserData = async value => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem('@user_data_key', jsonValue);
+    } catch (e) {
+      // saving error
+    }
+  };
+  useEffect(() => {
+    storeActiveUser(ActiveUser);
+  }, [ActiveUser]);
+  useEffect(() => {
+    storeStartTime(startTime);
+  }, [startTime]);
+  useEffect(() => {
+    storeOverTime(overTime);
+  }, [overTime]);
+  useEffect(() => {
+    storeRemarks(Remarks);
+  }, [Remarks]);
+  useEffect(() => {
+    storeInilitization(initilized);
+  }, [initilized]);
+
+  useEffect(() => {
+    if (!Retrieved) {
+      return;
+    }
+    console.log('tabledata Changed');
+    const saveData = async () => {
+      try {
+        await storeTableData(tableData);
+      } catch (e) {
+        // handle saving error
+      }
+    };
+
+    saveData();
+  }, [tableData]);
+  useEffect(() => {
+    if (!RetrieveUser) {
+      return;
+    }
+    const saveData = async () => {
+      try {
+        await storeUserData(userData);
+      } catch (e) {
+        // handle saving error
+      }
+    };
+
+    saveData();
+  }, [userData]);
+
+  //+++++++++++++++++++----------------+++++++++++++++++++++-----------------------++++++++++++++--------------
+  // Reading the active username
+  const ReadActiveUser = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@active_user_Key');
+      if (value !== null) {
+        setActiveUser(value);
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+  const ReadInilization = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@initilize_Key');
+      if (value !== null) {
+        return oninitilized(JSON.parse(value));
+      }
+    } catch (error) {
+      console.log('Error retrieving boolean value:', error);
+    }
+  };
+  const ReadStartTime = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@start_time_Key');
+      if (value !== null) {
+        onstartTime(value);
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+  const ReadOverTime = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@over_time_key');
+      if (value !== null) {
+        onoverTime(value);
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+  const ReadRemarks = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@Remarks_key');
+      if (value !== null) {
+        onRemarks(value);
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+  // Reading tabledata
+
+  const ReadTableData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('@table_data_Key');
+      onRetrieved(true);
+      return jsonValue != null ? onTableData(JSON.parse(jsonValue)) : null;
+    } catch (e) {
+      // error reading value
+    }
+  };
+  // reading userDatar
+  const ReadUserData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('@user_data_key');
+      onRetrieveUser(true);
+      return jsonValue != null ? onUserData(JSON.parse(jsonValue)) : null;
+    } catch (e) {
+      // error reading value
+    }
+  };
+
+  useEffect(() => {
+    ReadActiveUser();
+    ReadTableData();
+    ReadUserData();
+    ReadStartTime();
+    ReadOverTime();
+    ReadRemarks();
+    ReadInilization();
+  }, []);
 
   useEffect(() => {
     let ThisYear = tableData.find(x => x.year === new Date().getFullYear());
     if (ThisYear) {
       setCurMOD(ThisYear.months[currMonth]);
     }
-  }, [ActiveUser]);
+  }, [ActiveUser, tableData]);
   return (
     <MainContext.Provider value={contextValue}>{children}</MainContext.Provider>
   );

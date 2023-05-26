@@ -9,25 +9,30 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {MainContext} from '../services/main.context';
 export const EditData = () => {
-  const {tableData, onTableData} = useContext(MainContext);
+  const {
+    tableData,
+    onTableData,
+    startTime,
+    onstartTime,
+    overTime,
+    onoverTime,
+    Remarks,
+    onRemarks,
+  } = useContext(MainContext);
   const route = useRoute();
   const navigation = useNavigation();
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
-  const [startTime, onstartTime] = useState('');
-  const [overTime, onoverTime] = useState('');
+
   const [passHours, onpassHours] = useState('');
-  const [Remarks, onRemarks] = useState('');
   const [activeStart, onactiveStart] = useState(true);
   const {id} = route.params;
   const [PrevData, onPrevData] = useState();
   const [DefaultTime, onDefaultTime] = useState(new Date());
 
   const showTimePicker = (time: string) => {
-    console.log(time);
     const currentDate = new Date();
     const Desired =
       time === 'start' ? '7:00 AM' : time === 'over' ? '7:00 PM' : time;
-    console.log(Desired);
     // Extract hour, minute, and AM/PM from the desiredTime string
     const [hour, minute, ampm] = Desired.split(/:| /);
     // Convert hour from 12-hour format to 24-hour format
@@ -102,7 +107,6 @@ export const EditData = () => {
 
     // Calculate the difference in minutes
     const timeDiffMinutes = time2.diff(time1, 'minutes');
-    console.log(timeDiffMinutes);
     // Extract hours and minutes
     const hours = Math.floor(timeDiffMinutes / 60);
     const minutes = timeDiffMinutes % 60;
@@ -137,10 +141,11 @@ export const EditData = () => {
   };
   // update data of user
   const UpdateData = () => {
-    let tempTable = tableData;
+    // Create a copy of the tableData state
+    let updatedTableData = [...tableData];
 
-    // updating object
-    for (const obj of tempTable) {
+    // Update the object
+    for (const obj of updatedTableData) {
       for (const month in obj.months) {
         const data = obj.months[month];
         const targetObj = data.find(item => item.uniqId === id);
@@ -154,8 +159,11 @@ export const EditData = () => {
         }
       }
     }
-    onTableData(tempTable);
-    Alert.alert('Created', 'Successfully Created new user!', [
+
+    // Update the state with the modified tableData
+    onTableData(updatedTableData);
+
+    Alert.alert('Created', 'Successfully Updated your Data!', [
       {text: 'OK', onPress: () => navigation.goBack()},
     ]);
   };
