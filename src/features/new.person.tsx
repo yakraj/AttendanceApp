@@ -53,7 +53,8 @@ export const AddPerson = () => {
   const [Name, onName] = useState<string>('');
   const [SalP, onSalP] = useState<string>('');
   const [Exch, onExch] = useState<string>('');
-  const [Pf, onPf] = useState<string>('');
+  const [Pf, onPf] = useState<string>('12');
+  const [Pfsel, onPfsel] = useState<string>('');
   const [Esic, onEsic] = useState<string>('');
   const [Company, onCompany] = useState<string>('');
 
@@ -104,22 +105,54 @@ export const AddPerson = () => {
               colors={['#93FFF8', '#8B757509']}>
               <CustView width="50%">
                 <CusT width="90%" marL={20} marB={5} weight="bold" size={20}>
-                  PF%
+                  PF
                 </CusT>
-                <TextInput
-                  value={Pf}
-                  keyboardType="numeric"
-                  onChangeText={text => onPf(text)}
-                  style={{
-                    borderWidth: 1,
-                    borderColor: 'grey',
-                    fontSize: 20,
-                    width: '90%',
-                    paddingLeft: 20,
-                    borderRadius: 10,
-                  }}
-                  placeholder="PF % "
-                />
+                <CustView
+                  width="100%"
+                  jus="space-around"
+                  fdr="row"
+                  height="40%">
+                  <CustView
+                    jus="center"
+                    ali="center"
+                    width="40%"
+                    borR={10}
+                    touchable
+                    onpress={() => {
+                      onPfsel('yes');
+                    }}
+                    padd={5}
+                    height="90%"
+                    border="1px solid grey"
+                    bcC={Pfsel === 'yes' ? 'green' : ''}>
+                    <CusT
+                      color={Pfsel === 'yes' ? '#fff' : '#202020'}
+                      weight="bold"
+                      size={20}>
+                      YES
+                    </CusT>
+                  </CustView>
+                  <CustView
+                    jus="center"
+                    ali="center"
+                    width="40%"
+                    borR={10}
+                    touchable
+                    onpress={() => {
+                      onPfsel('no');
+                    }}
+                    padd={5}
+                    height="90%"
+                    border="1px solid grey"
+                    bcC={Pfsel === 'no' ? 'green' : ''}>
+                    <CusT
+                      color={Pfsel === 'no' ? '#fff' : '#202020'}
+                      weight="bold"
+                      size={20}>
+                      NO
+                    </CusT>
+                  </CustView>
+                </CustView>
               </CustView>
               <CustView width="50%">
                 <CusT
@@ -157,20 +190,13 @@ export const AddPerson = () => {
             ofl="hidden"
             touchable
             onpress={() => {
-              if (
-                Name.length < 1 ||
-                Company.length < 1 ||
-                SalP.length < 1 ||
-                Pf.length < 1 ||
-                Esic.length < 1 ||
-                Exch.length < 1
-              ) {
+              if (Name.length < 1 || Company.length < 1 || SalP.length < 1) {
                 Alert.alert('Error', 'Please fill all the fields!', [
                   {text: 'OK', onPress: () => null, style: 'cancel'},
                 ]);
                 return;
               } else {
-                CreateUser(Name, Company, SalP, Pf, Esic, Exch);
+                CreateUser(Name, Company, SalP, Pf, Pfsel, Esic, Exch);
                 Alert.alert('Created', 'Successfully Created new user!', [
                   {text: 'OK', onPress: () => navigation.goBack()},
                 ]);

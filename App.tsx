@@ -60,6 +60,9 @@ function App({navigation}): JSX.Element {
 
   useFocusEffect(
     React.useCallback(() => {
+      if (!CurMOD) {
+        return;
+      }
       // find all objects inside tableData array where userId is ActiveUser
       const find = CurMOD.filter(id => id.userId === ActiveUser);
       setUserWork(find);

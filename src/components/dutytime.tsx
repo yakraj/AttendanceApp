@@ -147,7 +147,7 @@ export const DutyTime = ({id}: dutydatatype) => {
       day: currDay,
       startTime: '-',
       overTime: '-',
-      leaveTime: '-',
+      leaveTime: 0,
       totalHours: 0,
       remarks: Remarks ? Remarks : 'Absent',
       userId: currentUser.userId,

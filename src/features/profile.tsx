@@ -1,7 +1,6 @@
 import CusT from '../components/custom.text';
 import React, {useContext, useState} from 'react';
 import {ImageBackground, ScrollView, Alert} from 'react-native';
-import {Topbar} from '../components/topbar';
 import {CustView, MyImage, NMorph} from '../components/devider';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {MainContext, currMonth, currYear} from '../services/main.context';
@@ -16,15 +15,7 @@ type daataa = {
   exCharge: number;
 };
 
-const OtherUser = ({
-  name,
-  salary,
-  pf,
-  userId,
-  salph,
-  esic,
-  exCharge,
-}: daataa) => {
+const OtherUser = ({name, pf, userId, salph, esic, exCharge}: daataa) => {
   const navigation = useNavigation();
   const [UserWork, setUserWork] = useState<any>([]);
   const {
@@ -287,7 +278,7 @@ export const Profile = () => {
         </ImageBackground>
         <MyImage
           style={{
-            transform: 'rotate(180deg)',
+            transform: [{rotate: '180deg'}],
             marginLeft: -30,
             height: 70,
             width: 70,
@@ -320,7 +311,6 @@ export const Profile = () => {
         </ImageBackground>
         <MyImage
           style={{
-            transform: 'rotate(180deg)',
             marginLeft: -30,
             height: 70,
             width: 70,

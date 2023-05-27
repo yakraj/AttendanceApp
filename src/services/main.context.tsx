@@ -166,6 +166,7 @@ export const MainProvider = ({children}) => {
     Company: string,
     salph: string,
     pf: string,
+    pfsel: string,
     esic: string,
     exCharge: string,
   ) => {
@@ -182,7 +183,7 @@ export const MainProvider = ({children}) => {
     TempUser.name = name;
     TempUser.company = Company;
     TempUser.salph = Number(salph);
-    TempUser.pf = Number(pf);
+    TempUser.pf = pfsel === 'yes' ? Number(pf) : 0;
     TempUser.esic = Number(esic);
     TempUser.exCharge = Number(exCharge);
     TempUser.userId = userName;
@@ -268,6 +269,7 @@ export const MainProvider = ({children}) => {
         console.log('step: 4, Year is there existing');
         let tempTable = [...tableData];
         const MonthChecker = YearChecker.months.hasOwnProperty(currMonth);
+        console.log;
         let findTargetObject = tempTable.find(obj => obj.year === currYear);
         if (MonthChecker) {
           console.log('step: 4, Month is existing');
@@ -285,8 +287,8 @@ export const MainProvider = ({children}) => {
           let TempMonthData = [];
           TempMonthData.length = 0;
           const MissingFiller = user => {
+            console.log(findTargetObject);
             let UserData = ThisMonth.filter(x => x.userId === user);
-
             const hasMissing = UserData.length < Number(currDay) - 1;
 
             if (hasMissing) {
@@ -338,7 +340,7 @@ export const MainProvider = ({children}) => {
         } else {
           console.log('step: 6, Month doesnot exist');
           // while the month is not exist it will add month array
-          findTargetObject.months[currMonth.toLowerCase()] = currMonth;
+          findTargetObject.months[currMonth.toLowerCase()] = [];
           onTableData(tempTable);
           return;
         }

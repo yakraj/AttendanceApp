@@ -119,8 +119,7 @@ export const EditData = () => {
 
   // Absent user
   const AbsentUser = () => {
-    let tempTable = tableData;
-
+    let tempTable = [...tableData];
     // updating object
     for (const obj of tempTable) {
       for (const month in obj.months) {
