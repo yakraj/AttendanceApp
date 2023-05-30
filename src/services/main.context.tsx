@@ -224,7 +224,7 @@ export const MainProvider = ({children}) => {
     exCharge: string,
     user: string,
   ) => {
-    let TempUsers = userData;
+    let TempUsers = [...userData];
     let TempUser = TempUsers.find(x => x.userId === user);
     TempUser.name = TempUser.name !== name ? name : TempUser.name;
     TempUser.company =
