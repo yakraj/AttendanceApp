@@ -85,7 +85,7 @@ export const AddPerson = () => {
             title="Salary/Hour"
           />
           <TextArea
-            placeholder="1 Hour Salary"
+            placeholder="Extra Charges"
             val={Exch}
             Numeric
             change={onExch}
