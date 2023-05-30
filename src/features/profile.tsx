@@ -31,8 +31,9 @@ const OtherUser = ({name, pf, userId, salph, esic, exCharge}: daataa) => {
   useFocusEffect(
     React.useCallback(() => {
       // find all objects inside tableData array where userId is ActiveUser
-      const FindYear = tableData.find(x => (x.year = currYear));
+      const FindYear = tableData.find(x => x.year == currYear);
       const FindMonth = FindYear.months[currMonth];
+
       const find = FindMonth.filter(id => id.userId === userId);
       setUserWork(find);
     }, [tableData, ActiveUser, userData]),

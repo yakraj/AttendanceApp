@@ -78,86 +78,7 @@ export const MainProvider = ({children}) => {
   const ChangeUser = (userId: string) => {
     setActiveUser(userId);
   };
-  const [tableData, onTableData] = useState([
-    {
-      year: 2023,
-      months: {
-        jan: [
-          {
-            day: '01',
-            startTime: '-',
-            overTime: '-',
-            leaveTime: 0,
-            totalHours: 0,
-            remarks: 'Saturday',
-            userId: 'yakraj1234',
-            uniqId: 'may01ewf',
-          },
-          {
-            day: '02',
-            startTime: '7:00 AM',
-            overTime: '7:00 PM',
-            leaveTime: 0,
-            totalHours: 12,
-            remarks: 'present',
-            userId: 'yakraj1234',
-            uniqId: 'may01easd',
-          },
-          {
-            day: '03',
-            startTime: '7:00 AM',
-            overTime: '7:00 PM',
-            leaveTime: 1,
-            totalHours: 11,
-            remarks: 'present',
-            userId: 'yakraj1234',
-            uniqId: 'mayewwf',
-          },
-          {
-            day: '03',
-            startTime: '7:00 AM',
-            overTime: '7:00 PM',
-            leaveTime: 1,
-            totalHours: 11,
-            remarks: 'present',
-            uniqId: 'hghg045sdf',
-          },
-        ],
-        may: [
-          {
-            day: 1,
-            startTime: '-',
-            overTime: '-',
-            leaveTime: 0,
-            totalHours: 0,
-            remarks: 'Saturday',
-            userId: 'yakraj1234',
-            uniqId: 'may01ewfwe55',
-          },
-          {
-            day: 18,
-            startTime: '7:00 AM',
-            overTime: '7:00 PM',
-            leaveTime: 0,
-            totalHours: 12,
-            remarks: 'present',
-            userId: 'yakraj1234',
-            uniqId: 'may01ehhg',
-          },
-          {
-            day: 2,
-            startTime: '7:00 AM',
-            overTime: '7:00 PM',
-            leaveTime: 0,
-            totalHours: 12,
-            remarks: 'present',
-            userId: 'dolma1234',
-            uniqId: 'may01w556',
-          },
-        ],
-      },
-    },
-  ]);
+  const [tableData, onTableData] = useState([]);
 
   //  for create new user
 
@@ -250,7 +171,7 @@ export const MainProvider = ({children}) => {
     }
 
     console.log('step: 1, entered inside useEffect');
-    const YearChecker = tableData.find(x => (x.year = currYear));
+    const YearChecker = tableData.find(x => x.year == currYear);
     if (!initilized) {
       console.log('step: 2, Not initialized');
       if (!YearChecker) {
@@ -269,7 +190,7 @@ export const MainProvider = ({children}) => {
         console.log('step: 4, Year is there existing');
         let tempTable = [...tableData];
         const MonthChecker = YearChecker.months.hasOwnProperty(currMonth);
-        console.log;
+
         let findTargetObject = tempTable.find(obj => obj.year === currYear);
         if (MonthChecker) {
           console.log('step: 4, Month is existing');
@@ -287,7 +208,6 @@ export const MainProvider = ({children}) => {
           let TempMonthData = [];
           TempMonthData.length = 0;
           const MissingFiller = user => {
-            console.log(findTargetObject);
             let UserData = ThisMonth.filter(x => x.userId === user);
             const hasMissing = UserData.length < Number(currDay) - 1;
 
@@ -360,7 +280,7 @@ export const MainProvider = ({children}) => {
       oninitilized(true);
       return;
     }
-  }, [Retrieved, tableData]);
+  }, [tableData]);
 
   // Create today data
 
@@ -480,7 +400,7 @@ export const MainProvider = ({children}) => {
     if (!Retrieved) {
       return;
     }
-    console.log('tabledata Changed');
+    console.log('tabledata Changed', tableData);
     const saveData = async () => {
       try {
         await storeTableData(tableData);
@@ -488,7 +408,6 @@ export const MainProvider = ({children}) => {
         // handle saving error
       }
     };
-
     saveData();
   }, [tableData]);
   useEffect(() => {
