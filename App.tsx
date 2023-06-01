@@ -1,10 +1,12 @@
 import {BottomBar} from './src/components/bottomBar';
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {CustView, MyImage, NMorph} from './src/components/devider';
 import {ImageBackground} from 'react-native';
 import CusT from './src/components/custom.text';
 import {MainContext} from './src/services/main.context';
 import {useFocusEffect} from '@react-navigation/native';
+import PushNotification from 'react-native-push-notification';
+
 // import NotificationManager from './src/components/notification.manage';
 type CustBR = {
   title: string;
@@ -48,15 +50,67 @@ export const BackgroundRect = ({title, data, unatt, pass}: CustBR) => {
   );
 };
 
+const configureNotificationChannel = () => {
+  PushNotification.createChannel(
+    {
+      channelId: 'trial-notification-channel',
+      channelName: 'Trial Notification Channel',
+      channelDescription: 'A channel for trial notifications',
+      importance: PushNotification.Importance.HIGH,
+      vibrate: true,
+    },
+    created => console.log(`createChannel returned '${created}'`),
+  );
+};
+
 function App({navigation}): JSX.Element {
   const {ActiveUser, tableData, userData, CurMOD} = useContext(MainContext);
   const [User, setUser] = React.useState<any>([]);
   const [UserWork, setUserWork] = React.useState<any>([]);
 
+  // this is trial based notification
+
+  const sendTrialNotification = () => {
+    PushNotification.localNotification({
+      /* Android Only Properties */
+      largeIconUrl:
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/2048px-Instagram_logo_2016.svg.png', // URL of the large icon image
+      bigPictureUrl:
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/2048px-Instagram_logo_2016.svg.png', // URL of the big picture image
+      color: 'blue', // Notification color
+      vibrate: true, // Vibrate on notification
+      vibration: 300, // Vibration duration
+      priority: 'high', // Notification priority
+      channelId: 'trial-notification-channel',
+      /* iOS and Android properties */
+      title: 'Custom Notification', // Notification title
+      message: 'This is a custom notification with an image.', // Notification message
+      playSound: true, // Play a sound on notification
+      soundName: 'default', // Sound to play (default is the default notification sound)
+    });
+  };
+
+  // these are for each 3 minutes
+
+  const scheduleThreeMinuteNotification = () => {
+    console.log('executed');
+    PushNotification.localNotificationSchedule({
+      channelId: 'trial-notification-channel',
+      message: 'This is a trial notification every 3 minutes!',
+      date: new Date(Date.now() + 3 * 60 * 1000),
+      repeatType: 'time',
+      repeatTime: 3 * 60 * 1000,
+      allowWhileIdle: true,
+      foreground: true,
+    });
+  };
+
   // this useEffect will manage the push notification with that
-  // useEffect(() => {
-  //   NotificationManager.startBackgroundTask();
-  // }, []);
+  useEffect(() => {
+    configureNotificationChannel();
+
+    // scheduleThreeMinuteNotification();
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -208,6 +262,13 @@ function App({navigation}): JSX.Element {
           </CustView>
         </CustView>
       </ImageBackground>
+      <CustView
+        padd={10}
+        border="1px solid grey"
+        touchable
+        onpress={() => sendTrialNotification()}>
+        <CusT>Notificate</CusT>
+      </CustView>
       <BottomBar navigation={navigation} />
     </CustView>
   );
