@@ -43,9 +43,11 @@ export const Table = () => {
 
   const FindCorrect = () => {
     let getYearData = tableData.filter((x: any) => x.year === year);
-    let getMonthData = getYearData[0].months[month];
-    let FindUserData = getMonthData.filter((x: any) => x.userId === userId);
-    onTableData(FindUserData);
+    if (getYearData.length) {
+      let getMonthData = getYearData[0].months[month];
+      let FindUserData = getMonthData.filter((x: any) => x.userId === userId);
+      onTableData(FindUserData);
+    }
   };
 
   // useFocusEffect

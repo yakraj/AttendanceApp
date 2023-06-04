@@ -32,10 +32,12 @@ const OtherUser = ({name, pf, userId, salph, esic, exCharge}: daataa) => {
     React.useCallback(() => {
       // find all objects inside tableData array where userId is ActiveUser
       const FindYear = tableData.find(x => x.year == currYear);
-      const FindMonth = FindYear.months[currMonth];
+      if (FindYear) {
+        const FindMonth = FindYear.months[currMonth];
 
-      const find = FindMonth.filter(id => id.userId === userId);
-      setUserWork(find);
+        const find = FindMonth.filter(id => id.userId === userId);
+        setUserWork(find);
+      }
     }, [tableData, ActiveUser, userData]),
   );
 
@@ -116,13 +118,21 @@ const OtherUser = ({name, pf, userId, salph, esic, exCharge}: daataa) => {
               SALARY
             </CusT>
             <CusT>
-              {UserWork.reduce((acc, curr) => {
-                return acc + curr.totalHours;
-              }, 0) *
-                salph -
-                pf -
+              {(
+                UserWork.reduce((acc, curr) => {
+                  return acc + curr.totalHours;
+                }, 0) *
+                  salph -
+                (UserWork.filter(day => day.totalHours >= 8).length *
+                  8 *
+                  salph *
+                  pf) /
+                  100 -
                 esic -
-                exCharge}
+                exCharge
+              )
+                .toString()
+                .substring(0, 7)}
             </CusT>
           </CustView>
           <CustView>
@@ -130,7 +140,7 @@ const OtherUser = ({name, pf, userId, salph, esic, exCharge}: daataa) => {
               PF
             </CusT>
             <CusT>
-              {(UserWork.filter(day => day.totalHours > 4).length *
+              {(UserWork.filter(day => day.totalHours >= 8).length *
                 8 *
                 salph *
                 pf) /
@@ -164,78 +174,91 @@ export const Profile = () => {
 
   return (
     <>
-      <ImageBackground
-        resizeMode="contain"
-        style={{width: '100%', height: 180}}
-        source={require('../../assects/profilevector.png')}>
-        <CustView
-          touchable
-          tofl
-          onpress={() => navigation.navigate('editUser', {user: ActiveUser})}
-          position="absolute"
-          Top="20"
-          Right="10">
-          <NMorph TC="pink" borR={50} height={60} width={60}>
-            <MyImage
-              resizeMode="contain"
-              style={{width: 50}}
-              source={require('../../assects/setting.png')}
-            />
-          </NMorph>
-        </CustView>
+      {ActiveUser && (
+        <ImageBackground
+          resizeMode="contain"
+          style={{width: '100%', height: 180}}
+          source={require('../../assects/profilevector.png')}>
+          <CustView
+            touchable
+            tofl
+            onpress={() => navigation.navigate('editUser', {user: ActiveUser})}
+            position="absolute"
+            Top="20"
+            Right="10">
+            <NMorph sadR={5} TC="pink" borR={50} height={60} width={60}>
+              <NMorph
+                inn
+                sadR={3}
+                BC="grey"
+                TC="white"
+                borR={50}
+                height={60}
+                width={60}>
+                <MyImage
+                  resizeMode="contain"
+                  style={{width: 50}}
+                  source={require('../../assects/setting.png')}
+                />
+              </NMorph>
+            </NMorph>
+          </CustView>
 
-        <CustView marB={-10} position="absolute" Top="35" Left="35">
-          <MyImage
-            style={{height: 85, width: 85}}
-            source={require('../../assects/avatar.png')}
-          />
-          <CusT size={30} weight="bold" color="grey">
-            {User[0] && User[0].name.substring(0, 7)}
-          </CusT>
+          <CustView marB={-10} position="absolute" Top="35" Left="35">
+            <MyImage
+              style={{height: 85, width: 85}}
+              source={require('../../assects/avatar.png')}
+            />
+            <CusT size={30} weight="bold" color="grey">
+              {User[0] && User[0].name.substring(0, 7)}
+            </CusT>
+          </CustView>
+        </ImageBackground>
+      )}
+      {ActiveUser && (
+        <CustView>
+          <CustView fdr="row" ali="flex-start" width="90%">
+            <CusT size={20} weight="bold" color="grey">
+              Company
+            </CusT>
+            <CusT size={20} color="grey">
+              : {User[0] && User[0].company}
+            </CusT>
+          </CustView>
+          <CustView fdr="row" ali="flex-start" width="90%">
+            <CusT size={20} weight="bold" color="grey">
+              Salary Per Hour
+            </CusT>
+            <CusT size={20} color="grey">
+              : Rs. {User[0] && User[0].salph}
+            </CusT>
+          </CustView>
+          <CustView fdr="row" ali="flex-start" width="90%">
+            <CusT size={20} weight="bold" color="grey">
+              PF cutting
+            </CusT>
+            <CusT size={20} color="grey">
+              : {User[0] && User[0].pf}%
+            </CusT>
+          </CustView>
+          <CustView fdr="row" ali="flex-start" width="90%">
+            <CusT size={20} weight="bold" color="grey">
+              ESIC
+            </CusT>
+            <CusT size={20} color="grey">
+              :Rs. {User[0] && User[0].esic}
+            </CusT>
+          </CustView>
+          <CustView fdr="row" ali="flex-start" width="90%">
+            <CusT size={20} weight="bold" color="grey">
+              Extra Charges
+            </CusT>
+            <CusT size={20} color="grey">
+              :Rs. {User[0] && User[0].exCharge}
+            </CusT>
+          </CustView>
         </CustView>
-      </ImageBackground>
-      <CustView>
-        <CustView fdr="row" ali="flex-start" width="90%">
-          <CusT size={20} weight="bold" color="grey">
-            Company
-          </CusT>
-          <CusT size={20} color="grey">
-            : {User[0] && User[0].company}
-          </CusT>
-        </CustView>
-        <CustView fdr="row" ali="flex-start" width="90%">
-          <CusT size={20} weight="bold" color="grey">
-            Salary Per Hour
-          </CusT>
-          <CusT size={20} color="grey">
-            : Rs. {User[0] && User[0].salph}
-          </CusT>
-        </CustView>
-        <CustView fdr="row" ali="flex-start" width="90%">
-          <CusT size={20} weight="bold" color="grey">
-            PF cutting
-          </CusT>
-          <CusT size={20} color="grey">
-            : {User[0] && User[0].pf}%
-          </CusT>
-        </CustView>
-        <CustView fdr="row" ali="flex-start" width="90%">
-          <CusT size={20} weight="bold" color="grey">
-            ESIC
-          </CusT>
-          <CusT size={20} color="grey">
-            :Rs. {User[0] && User[0].esic}
-          </CusT>
-        </CustView>
-        <CustView fdr="row" ali="flex-start" width="90%">
-          <CusT size={20} weight="bold" color="grey">
-            Extra Charges
-          </CusT>
-          <CusT size={20} color="grey">
-            :Rs. {User[0] && User[0].exCharge}
-          </CusT>
-        </CustView>
-      </CustView>
+      )}
       <CustView>
         <ScrollView horizontal={true}>
           {RemUser.map((x, i) => {
@@ -254,39 +277,41 @@ export const Profile = () => {
           })}
         </ScrollView>
       </CustView>
-      <CustView
-        onpress={() => navigation.navigate('alldata')}
-        touchable
-        tblC="#82FFFF"
-        fdr="row">
-        <ImageBackground
-          resizeMode="contain"
-          style={{
-            height: 90,
-            width: '90%',
-            alignItems: 'flex-start',
-            justifyContent: 'center',
-          }}
-          source={require('../../assects/topbarect.png')}>
-          <CusT
-            marL={30}
-            size={30}
-            letterSpacing={5}
-            weight="bold"
-            color="grey">
-            ALL DATA
-          </CusT>
-        </ImageBackground>
-        <MyImage
-          style={{
-            transform: [{rotate: '180deg'}],
-            marginLeft: -30,
-            height: 70,
-            width: 70,
-          }}
-          source={require('../../assects/back.png')}
-        />
-      </CustView>
+      {ActiveUser && (
+        <CustView
+          onpress={() => navigation.navigate('alldata')}
+          touchable
+          tblC="#82FFFF"
+          fdr="row">
+          <ImageBackground
+            resizeMode="contain"
+            style={{
+              height: 90,
+              width: '90%',
+              alignItems: 'flex-start',
+              justifyContent: 'center',
+            }}
+            source={require('../../assects/topbarect.png')}>
+            <CusT
+              marL={30}
+              size={30}
+              letterSpacing={5}
+              weight="bold"
+              color="grey">
+              ALL DATA
+            </CusT>
+          </ImageBackground>
+          <MyImage
+            style={{
+              transform: [{rotate: '180deg'}],
+              marginLeft: -30,
+              height: 70,
+              width: 70,
+            }}
+            source={require('../../assects/back.png')}
+          />
+        </CustView>
+      )}
       <CustView
         touchable
         onpress={() => navigation.navigate('addperson')}

@@ -39,11 +39,13 @@ export const BottomBar = ({navigation}: Props) => {
         source={require('../../assects/navbar.png')}>
         <CustView
           onpress={() => {
-            navigation.navigate('table', {
-              year: getYear,
-              month: getMonth,
-              userId: ActiveUser,
-            });
+            if (ActiveUser) {
+              navigation.navigate('table', {
+                year: getYear,
+                month: getMonth,
+                userId: ActiveUser,
+              });
+            }
           }}
           marL={20}
           tblC="blue"
@@ -57,15 +59,7 @@ export const BottomBar = ({navigation}: Props) => {
             source={require('../../assects/tablenav.png')}
           />
         </CustView>
-        <CustView
-          onpress={() => {
-            StoreIt();
-          }}
-          marT={-100}
-          touchable
-          tofl={true}
-          height="50px"
-          width="50px">
+        <CustView marT={-100} touchable tofl={true} height="50px" width="50px">
           <MyImage
             style={{height: 70, width: 70}}
             source={require('../../assects/homenav.png')}

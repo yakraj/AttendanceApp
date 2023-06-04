@@ -267,6 +267,7 @@ type NMorphProps = PropsWithChildren<{
   height?: number;
   width?: number;
   borR: number;
+  sadR: number;
   TC?: string;
   BC?: string;
   bcC?: string;
@@ -274,6 +275,11 @@ type NMorphProps = PropsWithChildren<{
   ali?: string;
   ofl?: string;
   inn?: boolean;
+  marT?: number;
+  marB?: number;
+  marL?: number;
+  marR?: number;
+  marr?: number;
 }>;
 /* eslint-disable deprecation/deprecation */
 export const NMorph = ({
@@ -288,6 +294,12 @@ export const NMorph = ({
   jus,
   ali,
   ofl,
+  sadR,
+  marT,
+  marB,
+  marL,
+  marR,
+  marr,
 }: NMorphProps) => {
   return (
     <Neomorph
@@ -296,7 +308,7 @@ export const NMorph = ({
       lightShadowColor={TC ?? '#fff'}
       style={{
         shadowOpacity: 0.6,
-        shadowRadius: 10,
+        shadowRadius: sadR ? sadR : 10,
         backgroundColor: bcC ?? '#ECF0F3',
         width: width ?? 100,
         height: height ?? 100,
@@ -304,6 +316,11 @@ export const NMorph = ({
         overflow: ofl,
         justifyContent: jus ?? 'center',
         alignItems: ali ?? 'center',
+        marginTop: marT,
+        marginBottom: marB,
+        marginLeft: marL,
+        marginRight: marR,
+        margin: marr,
       }}>
       {children}
     </Neomorph>

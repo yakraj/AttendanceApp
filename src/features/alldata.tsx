@@ -1,5 +1,5 @@
 import CusT from '../components/custom.text';
-import {CustView} from '../components/devider';
+import {CustView, NMorph} from '../components/devider';
 import {ScrollView} from 'react-native';
 import {Topbar} from '../components/topbar';
 import React, {
@@ -22,31 +22,39 @@ const Yeardata = {
 
 const YearScroll = ({data, onMonths, onactiveYear}: Yeardata) => {
   return (
-    <CustView
-      width="80px"
+    <NMorph
+      ofl="hidden"
+      sadR={3}
+      TC="skyblue"
+      height={40}
       marL={10}
       marR={10}
       borR={30}
-      touchable
-      onpress={() => {
-        onMonths(data.months);
-        onactiveYear(data.year);
-      }}
-      ofl="hidden"
-      height="40px">
-      <LinearGradient
-        style={{
-          height: '100%',
-          width: '100%',
-          justifyContent: 'center',
-          alignItems: 'center',
+      width={80}>
+      <CustView
+        width="80px"
+        touchable
+        tofl
+        onpress={() => {
+          onMonths(data.months);
+          onactiveYear(data.year);
         }}
-        colors={['#FFA14A', '#E6C0FE']}>
-        <CusT weight="bold" size={20}>
-          {data.year}
-        </CusT>
-      </LinearGradient>
-    </CustView>
+        ofl="hidden"
+        height="40px">
+        <LinearGradient
+          style={{
+            height: '100%',
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          colors={['#FFA14A', '#E6C0FE']}>
+          <CusT weight="bold" size={20}>
+            {data.year}
+          </CusT>
+        </LinearGradient>
+      </CustView>
+    </NMorph>
   );
 };
 
@@ -59,34 +67,40 @@ const MonthNames = ({month, data, activeYear}: monthType) => {
   const navigation = useNavigation();
 
   return (
-    <CustView
-      touchable
-      onpress={() =>
-        navigation.navigate('retrieve', {
-          year: activeYear,
-          month: month,
-          data: data,
-        })
-      }
-      width="80px"
+    <NMorph
+      ofl="hidden"
+      sadR={3}
+      TC="skyblue"
+      height={80}
       marB={10}
       marT={10}
       borR={10}
-      height="80px"
-      ofl="hidden">
-      <LinearGradient
-        style={{
-          height: '100%',
-          width: '100%',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        colors={['#FFA14A', '#fff']}>
-        <CusT weight="bold" size={30}>
-          {month}
-        </CusT>
-      </LinearGradient>
-    </CustView>
+      width={80}>
+      <CustView
+        touchable
+        onpress={() =>
+          navigation.navigate('retrieve', {
+            year: activeYear,
+            month: month,
+            data: data,
+          })
+        }
+        width="100%"
+        height="100%">
+        <LinearGradient
+          style={{
+            height: '100%',
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          colors={['#FFA14A', '#fff']}>
+          <CusT weight="bold" size={30}>
+            {month}
+          </CusT>
+        </LinearGradient>
+      </CustView>
+    </NMorph>
   );
 };
 export const AllData = () => {
@@ -106,6 +120,7 @@ export const AllData = () => {
       <CustView>
         <ScrollView
           style={{
+            height: 60,
             marginTop: 20,
             paddingBottom: 10,
             borderBottomColor: 'grey',

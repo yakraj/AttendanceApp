@@ -10,6 +10,7 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
+import {windowWidth} from '../components/utilitis';
 
 type Texttypes = {
   title: string;
@@ -20,35 +21,44 @@ type Texttypes = {
 };
 const TextArea = ({title, val, change, placeholder, Numeric}: Texttypes) => {
   return (
-    <CustView height="120px" marB={20} borR={15} ofl="hidden" width="90%">
-      <LinearGradient
-        style={{
-          height: '100%',
-          width: '100%',
-          justifyContent: 'center',
-          alignItems: 'flex-start',
-          paddingLeft: 25,
-        }}
-        colors={['#93FFF8', '#8B757509']}>
-        <CusT marB={5} weight="bold" size={20}>
-          {title}
-        </CusT>
-        <TextInput
-          value={val}
-          keyboardType={Numeric ? 'numeric' : 'default'}
-          onChangeText={text => change(text)}
+    <NMorph
+      ofl="hidden"
+      borR={15}
+      sadR={5}
+      TC="pink"
+      marB={20}
+      height={120}
+      width={windowWidth * 0.9}>
+      <CustView height="100%" width="100%">
+        <LinearGradient
           style={{
-            borderWidth: 1,
-            borderColor: 'grey',
-            fontSize: 20,
-            width: '90%',
-            paddingLeft: 20,
-            borderRadius: 10,
+            height: '100%',
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+            paddingLeft: 25,
           }}
-          placeholder={placeholder}
-        />
-      </LinearGradient>
-    </CustView>
+          colors={['#93FFF8', '#8B757509']}>
+          <CusT marB={5} weight="bold" size={20}>
+            {title}
+          </CusT>
+          <TextInput
+            value={val}
+            keyboardType={Numeric ? 'numeric' : 'default'}
+            onChangeText={text => change(text)}
+            style={{
+              borderWidth: 1,
+              borderColor: 'grey',
+              fontSize: 20,
+              width: '90%',
+              paddingLeft: 20,
+              borderRadius: 10,
+            }}
+            placeholder={placeholder}
+          />
+        </LinearGradient>
+      </CustView>
+    </NMorph>
   );
 };
 
@@ -113,63 +123,72 @@ export const EditUser = () => {
             title="Extra Charges"
           />
           {/* this is pf and esic section */}
-          <CustView fdr="row" height="120px" borR={15} ofl="hidden" width="90%">
-            <LinearGradient
-              style={{
-                height: '100%',
-                width: '100%',
-                justifyContent: 'center',
-                alignItems: 'center',
-                paddingLeft: 25,
-                flexDirection: 'row',
-              }}
-              colors={['#93FFF8', '#8B757509']}>
-              <CustView width="50%">
-                <CusT width="90%" marL={20} marB={5} weight="bold" size={20}>
-                  PF%
-                </CusT>
-                <TextInput
-                  value={Pf}
-                  keyboardType="numeric"
-                  onChangeText={text => onPf(text)}
-                  style={{
-                    borderWidth: 1,
-                    borderColor: 'grey',
-                    fontSize: 20,
-                    width: '90%',
-                    paddingLeft: 20,
-                    borderRadius: 10,
-                  }}
-                  placeholder="PF % "
-                />
-              </CustView>
-              <CustView width="50%">
-                <CusT
-                  width="90%"
-                  marL={20}
-                  textAlign="left"
-                  marB={5}
-                  weight="bold"
-                  size={20}>
-                  ESIC
-                </CusT>
-                <TextInput
-                  value={Esic}
-                  keyboardType="numeric"
-                  onChangeText={text => onEsic(text)}
-                  style={{
-                    borderWidth: 1,
-                    borderColor: 'grey',
-                    fontSize: 20,
-                    width: '90%',
-                    paddingLeft: 20,
-                    borderRadius: 10,
-                  }}
-                  placeholder="Esic Charge"
-                />
-              </CustView>
-            </LinearGradient>
-          </CustView>
+          <NMorph
+            ofl="hidden"
+            borR={15}
+            sadR={5}
+            TC="pink"
+            marB={20}
+            height={120}
+            width={windowWidth * 0.9}>
+            <CustView fdr="row" height="100%" width="100%">
+              <LinearGradient
+                style={{
+                  height: '100%',
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  paddingLeft: 25,
+                  flexDirection: 'row',
+                }}
+                colors={['#93FFF8', '#8B757509']}>
+                <CustView width="50%">
+                  <CusT width="90%" marL={20} marB={5} weight="bold" size={20}>
+                    PF%
+                  </CusT>
+                  <TextInput
+                    value={Pf}
+                    keyboardType="numeric"
+                    onChangeText={text => onPf(text)}
+                    style={{
+                      borderWidth: 1,
+                      borderColor: 'grey',
+                      fontSize: 20,
+                      width: '90%',
+                      paddingLeft: 20,
+                      borderRadius: 10,
+                    }}
+                    placeholder="PF % "
+                  />
+                </CustView>
+                <CustView width="50%">
+                  <CusT
+                    width="90%"
+                    marL={20}
+                    textAlign="left"
+                    marB={5}
+                    weight="bold"
+                    size={20}>
+                    ESIC
+                  </CusT>
+                  <TextInput
+                    value={Esic}
+                    keyboardType="numeric"
+                    onChangeText={text => onEsic(text)}
+                    style={{
+                      borderWidth: 1,
+                      borderColor: 'grey',
+                      fontSize: 20,
+                      width: '90%',
+                      paddingLeft: 20,
+                      borderRadius: 10,
+                    }}
+                    placeholder="Esic Charge"
+                  />
+                </CustView>
+              </LinearGradient>
+            </CustView>
+          </NMorph>
 
           {/* this is submit button */}
           <CustView

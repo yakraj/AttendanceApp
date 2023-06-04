@@ -1,5 +1,5 @@
-import {CustView, MyImage} from './devider';
-import React, {useState} from 'react';
+import {CustView, MyImage, NMorph} from './devider';
+import React, {useEffect} from 'react';
 import CusT from './custom.text';
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -7,7 +7,8 @@ import {PermissionsAndroid, Alert} from 'react-native';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import RNFS from 'react-native-fs';
 import {currMonth, currYear} from '../services/main.context';
-
+import {windowWidth} from './utilitis';
+import PushNotification from 'react-native-push-notification';
 // import Share from 'react-native-share';
 interface Props {
   title: string;
@@ -35,6 +36,35 @@ const requestStoragePermission = async () => {
 };
 export const Topbar = ({title, isTable, route, pdf}: Props) => {
   const navigation = useNavigation();
+
+  useEffect(() => {
+    PushNotification.createChannel(
+      {
+        channelId: 'doanload-successful-channel',
+        channelName: 'Download successful',
+        channelDescription: 'On completation of download file.',
+        importance: PushNotification.Importance.HIGH,
+        vibrate: true,
+      },
+      created => console.log(`createChannel returned '${created}'`),
+    );
+  }, []);
+
+  const sendTrialNotification = () => {
+    PushNotification.localNotification({
+      /* Android Only Properties */
+      color: 'blue', // Notification color
+      vibrate: true, // Vibrate on notification
+      vibration: 300, // Vibration duration
+      priority: 'high', // Notification priority
+      channelId: 'doanload-successful-channel',
+      /* iOS and Android properties */
+      title: 'PDF Downloaded Successfully', // Notification title
+      message: `Please open your download file on file manager.`, // Notification message
+      playSound: true, // Play a sound on notification
+      soundName: 'default', // Sound to play (default is the default notification sound)
+    });
+  };
 
   var concatenatedData = '';
 
@@ -138,7 +168,11 @@ export const Topbar = ({title, isTable, route, pdf}: Props) => {
           ${user[0].company}
         </h1>
         <h1 style="margin: 0px; font-weight: normal; font-size: 1.3rem;">
-          ${currMonth + ' ' + currYear} month salary details
+          ${
+            currYear.toString().toUpperCase() +
+            ' ' +
+            currMonth.toString().toUpperCase()
+          } month salary details
         </h1>
       </div>
       <div
@@ -452,6 +486,7 @@ export const Topbar = ({title, isTable, route, pdf}: Props) => {
       const downloadPath = `${RNFS.DownloadDirectoryPath}/${fileName}`;
       await RNFS.copyFile(file.filePath, downloadPath);
       await RNFS.scanFile(downloadPath);
+      sendTrialNotification();
       Alert.alert(
         'File Saved',
         `File saved successfully on download file on your mobile as, \n \n ${new Date().getDate()} ${currMonth} Attendance Report ${
@@ -468,7 +503,7 @@ export const Topbar = ({title, isTable, route, pdf}: Props) => {
 
   return (
     <>
-      <CustView fdr="row" ali="center" jus="space-around" marT={5}>
+      <CustView fdr="row" ali="center" padB={7} jus="space-around" marT={5}>
         <CustView
           onpress={() => navigation.goBack()}
           touchable
@@ -481,26 +516,29 @@ export const Topbar = ({title, isTable, route, pdf}: Props) => {
           />
         </CustView>
 
-        <CustView
-          height="50px"
-          width={isTable || pdf ? '60%' : '80%'}
-          bcC="red"
+        <NMorph
+          ofl="hidden"
           borR={50}
-          ofl="hidden">
-          <LinearGradient
-            style={{
-              height: '100%',
-              width: '100%',
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              paddingLeft: 15,
-            }}
-            colors={['#82FFFF', '#CEFFCA']}>
-            <CusT weight="bold" size={25}>
-              {title}
-            </CusT>
-          </LinearGradient>
-        </CustView>
+          sadR={2}
+          TC="skyblue"
+          height={50}
+          width={isTable || pdf ? windowWidth * 0.6 : windowWidth * 0.8}>
+          <CustView height="100%" width="100%" bcC="red" borR={50} ofl="hidden">
+            <LinearGradient
+              style={{
+                height: '100%',
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+                paddingLeft: 15,
+              }}
+              colors={['#82FFFF', '#CEFFCA']}>
+              <CusT weight="bold" size={25}>
+                {title}
+              </CusT>
+            </LinearGradient>
+          </CustView>
+        </NMorph>
         {isTable && (
           <CustView
             onpress={() => navigation.navigate('table', route)}

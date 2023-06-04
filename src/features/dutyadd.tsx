@@ -13,7 +13,7 @@ export const DutyAdd = () => {
   return (
     <>
       <Topbar title="Add duty" />
-      <CustView bcC="#D9D9D9">
+      <CustView height="100%" bcC="#D9D9D9">
         <ScrollView>
           <CustView marB={userData.length * 20} jus="center" ali="center">
             {userData.map((x, i) => {

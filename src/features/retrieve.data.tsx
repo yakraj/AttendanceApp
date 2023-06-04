@@ -105,7 +105,15 @@ export const Retrieve = () => {
                 {User[0] &&
                   UserWork.reduce((acc, curr) => {
                     return acc + curr.totalHours;
-                  }, 0) * User[0].salph}
+                  }, 0) *
+                    User[0].salph -
+                    User[0].esic -
+                    User[0].exCharge -
+                    (UserWork.filter(day => day.totalHours > 4).length *
+                      8 *
+                      User[0].salph *
+                      User[0].pf) /
+                      100}
               </CusT>
             </CustView>
             <CustView fdr="row">

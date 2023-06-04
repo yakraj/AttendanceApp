@@ -1,11 +1,17 @@
 import {BottomBar} from './src/components/bottomBar';
-import React, {useContext, useEffect} from 'react';
-import {CustView, MyImage, NMorph} from './src/components/devider';
+import React, {useContext, useEffect, useState} from 'react';
+import {CustView, MyImage} from './src/components/devider';
 import {ImageBackground} from 'react-native';
 import CusT from './src/components/custom.text';
-import {MainContext} from './src/services/main.context';
+import {
+  MainContext,
+  currDay,
+  currMonth,
+  currYear,
+} from './src/services/main.context';
 import {useFocusEffect} from '@react-navigation/native';
 import PushNotification from 'react-native-push-notification';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import NotificationManager from './src/components/notification.manage';
 type CustBR = {
@@ -64,53 +70,101 @@ const configureNotificationChannel = () => {
 };
 
 function App({navigation}): JSX.Element {
-  const {ActiveUser, tableData, userData, CurMOD} = useContext(MainContext);
+  const {
+    ActiveUser,
+    tableData,
+    userData,
+    CurMOD,
+    initiRetrieved,
+    initilized,
+    oninitilized,
+  } = useContext(MainContext);
   const [User, setUser] = React.useState<any>([]);
   const [UserWork, setUserWork] = React.useState<any>([]);
 
   // this is trial based notification
 
-  const sendTrialNotification = () => {
-    PushNotification.localNotification({
-      /* Android Only Properties */
-      largeIconUrl:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/2048px-Instagram_logo_2016.svg.png', // URL of the large icon image
-      bigPictureUrl:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/2048px-Instagram_logo_2016.svg.png', // URL of the big picture image
-      color: 'blue', // Notification color
-      vibrate: true, // Vibrate on notification
-      vibration: 300, // Vibration duration
-      priority: 'high', // Notification priority
-      channelId: 'trial-notification-channel',
-      /* iOS and Android properties */
-      title: 'Custom Notification', // Notification title
-      message: 'This is a custom notification with an image.', // Notification message
-      playSound: true, // Play a sound on notification
-      soundName: 'default', // Sound to play (default is the default notification sound)
-    });
-  };
+  // const sendTrialNotification = () => {
+  //   PushNotification.localNotification({
+  //     /* Android Only Properties */
+  //     largeIconUrl:
+  //       'https://raw.githubusercontent.com/yakraj/attendance-app-res/main/notificationicon.png', // URL of the large icon image
+  //     bigPictureUrl:
+  //       'https://raw.githubusercontent.com/yakraj/attendance-app-res/main/bignotification.png', // URL of the big picture image
+  //     color: 'blue', // Notification color
+  //     vibrate: true, // Vibrate on notification
+  //     vibration: 300, // Vibration duration
+  //     priority: 'high', // Notification priority
+  //     channelId: 'trial-notification-channel',
+  //     /* iOS and Android properties */
+  //     title: 'Daily Attendance Reminder', // Notification title
+  //     message: `Your working data matters.`, // Notification message
+  //     playSound: true, // Play a sound on notification
+  //     soundName: 'default', // Sound to play (default is the default notification sound)
+  //   });
+  // };
 
   // these are for each 3 minutes
 
-  const scheduleThreeMinuteNotification = () => {
-    console.log('executed');
+  const ScheduleDailyReminder = () => {
+    console.log('1321321321321321321321321 123132121 this function executed');
     PushNotification.localNotificationSchedule({
+      largeIconUrl:
+        'https://raw.githubusercontent.com/yakraj/attendance-app-res/main/notificationicon.png', // URL of the large icon image
+      bigPictureUrl:
+        'https://raw.githubusercontent.com/yakraj/attendance-app-res/main/bignotification.png', // URL of the big picture image
       channelId: 'trial-notification-channel',
-      message: 'This is a trial notification every 3 minutes!',
-      date: new Date(Date.now() + 3 * 60 * 1000),
-      repeatType: 'time',
-      repeatTime: 3 * 60 * 1000,
-      allowWhileIdle: true,
+      title: 'Daily Attendance Reminder', // Notification title
+      message: `Your working report matters.`,
+      WhileIdle: true,
       foreground: true,
+      date: new Date(new Date().setHours(18, 0, 0)), // set the notification time to 10 pm
+      repeatType: 'day',
+      repeatTime: 24 * 60 * 60 * 1000, // set the interval to 24 hours (in milliseconds)
+      allowWhileIdle: true,
     });
   };
 
   // this useEffect will manage the push notification with that
-  useEffect(() => {
-    configureNotificationChannel();
+  const ReadInilization = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@initilize_Key');
+      if (value !== null) {
+        oninitilized(JSON.parse(value));
+        return value;
+      }
+    } catch (error) {
+      console.log('Error retrieving boolean value:', error);
+    }
+  };
 
-    // scheduleThreeMinuteNotification();
+  useEffect(() => {
+    const checkAppOpened = async () => {
+      const isFirstTime = await ReadInilization();
+      if (isFirstTime === undefined) {
+        configureNotificationChannel();
+        ScheduleDailyReminder();
+        oninitilized(true);
+      }
+    };
+
+    checkAppOpened();
   }, []);
+
+  // useEffect(() => {
+  //   // console.log('before retrieved', initiRetrieved, initilized);
+  //   // if (!initiRetrieved) {
+  //   //   return;
+  //   // }
+  //   let data = await ReadInilization();
+  //   console.log(data);
+
+  //   if (!initilized) {
+  //     configureNotificationChannel();
+  //     ScheduleDailyReminder();
+  //     oninitilized(true);
+  //   }
+  // }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -126,6 +180,23 @@ function App({navigation}): JSX.Element {
     }, [CurMOD, userData, ActiveUser]),
   );
 
+  // it will let me find today's data exist of not
+
+  const [todayExist, setTodayExist] = useState(false);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (tableData.length) {
+        let findyear = tableData.find(x => x.year == currYear);
+
+        let findToday = findyear.months[currMonth].some(
+          x => x.day === currDay && x.userId === ActiveUser,
+        );
+        setTodayExist(findToday);
+      }
+    }, [tableData, ActiveUser]),
+  );
+
   return userData.length === 0 ? (
     <CustView
       jus="center"
@@ -135,13 +206,23 @@ function App({navigation}): JSX.Element {
       width="100%">
       <MyImage
         resizeMode="contain"
-        style={{height: '100%'}}
-        source={require('./assects/nouser.png')}
+        style={{height: '40%'}}
+        source={require('./assects/landing.png')}
       />
 
-      <CusT position="absolute" top={600} size={20} color="red">
-        No User added Please Add User By clicking profile icon
+      <CusT size={30} color="#7aa8e5" weight="bold">
+        No Users
       </CusT>
+      <CustView
+        tblC="#7aa8e5"
+        onpress={() => navigation.navigate('addperson')}
+        padd={10}
+        borR={10}
+        border="1px solid grey"
+        width="20%"
+        touchable>
+        <CusT color="#7aa8e5">ADD</CusT>
+      </CustView>
       <BottomBar navigation={navigation} />
     </CustView>
   ) : (
@@ -159,6 +240,19 @@ function App({navigation}): JSX.Element {
           position="absolute"
           Left="15"
           Top="78">
+          {!todayExist && (
+            <CustView
+              height="15px"
+              width="15px"
+              position="absolute"
+              bcC="green"
+              Right="2"
+              Top="5"
+              zindex={10}
+              opacity={0.8}
+              borR={50}
+            />
+          )}
           <MyImage
             resizeMode="contain"
             style={{width: 40}}
@@ -262,13 +356,13 @@ function App({navigation}): JSX.Element {
           </CustView>
         </CustView>
       </ImageBackground>
-      <CustView
+      {/* <CustView
         padd={10}
         border="1px solid grey"
         touchable
-        onpress={() => sendTrialNotification()}>
+        onpress={() => sendTrialNotification()}> 
         <CusT>Notificate</CusT>
-      </CustView>
+      </CustView> */}
       <BottomBar navigation={navigation} />
     </CustView>
   );

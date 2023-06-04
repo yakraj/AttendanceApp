@@ -41,44 +41,17 @@ export const MainProvider = ({children}) => {
   const [Remarks, onRemarks] = useState('');
   // thi state for firsttime ever the app gets initilized
   const [initilized, oninitilized] = useState<boolean>(false);
-  const [Retrieved, onRetrieved] = useState<boolean>(false);
   const [RetrieveUser, onRetrieveUser] = useState<boolean>(false);
 
   // Set the context value using an object
-  const [userData, onUserData] = useState([
-    {
-      company: 'dynamic mega tech engineering.',
-      name: 'yakraj pariyar',
-      salph: 74,
-      pf: 12,
-      esic: 250,
-      exCharge: 200,
-      userId: 'yakraj1234',
-    },
-    {
-      company: 'autofit industrial limited.',
-      name: 'tulsi pariyar',
-      salph: 54,
-      pf: 0,
-      esic: 250,
-      exCharge: 0,
-      userId: 'tulsi1234',
-    },
-    {
-      company: 'crown closures',
-      name: 'Dolma pariyar',
-      salph: 54,
-      pf: 12,
-      esic: 250,
-      exCharge: 0,
-      userId: 'dolma1234',
-    },
-  ]);
+  const [userData, onUserData] = useState([]);
 
   const ChangeUser = (userId: string) => {
     setActiveUser(userId);
   };
   const [tableData, onTableData] = useState([]);
+  const [Retrieved, onRetrieved] = useState<boolean>(false);
+  const [initiRetrieved, oninitiRetrieved] = useState<boolean>(false);
 
   //  for create new user
 
@@ -115,14 +88,14 @@ export const MainProvider = ({children}) => {
     let year = new Date().getFullYear();
     let tempTable = tableData;
 
-    for (let i = 0; i < new Date().getDate(); i++) {
+    for (let i = 0; i < new Date().getDate() - 1; i++) {
       let dayData = {
         day: String(i + 1),
         startTime: '-',
         overTime: '-',
         leaveTime: 0,
         totalHours: 0,
-        remarks: 'Unfilled',
+        remarks: '-',
         userId: userName,
         uniqId: currMonth + String(i + 1) + generateRandomString(5),
       };
@@ -170,104 +143,11 @@ export const MainProvider = ({children}) => {
       return;
     }
 
-    console.log('step: 1, entered inside useEffect');
+    // console.log('step: 1, entered inside useEffect');
     const YearChecker = tableData.find(x => x.year == currYear);
-    if (!initilized) {
-      console.log('step: 2, Not initialized');
-      if (!YearChecker) {
-        console.log('step: 3, Year doesnot exist');
-        onTableData([
-          ...tableData,
-          {
-            year: currYear,
-            months: {
-              [currMonth]: [],
-            },
-          },
-        ]);
-        return;
-      } else {
-        console.log('step: 4, Year is there existing');
-        let tempTable = [...tableData];
-        const MonthChecker = YearChecker.months.hasOwnProperty(currMonth);
-
-        let findTargetObject = tempTable.find(obj => obj.year === currYear);
-        if (MonthChecker) {
-          console.log('step: 4, Month is existing');
-          // while the month data is exist then it will find the yesterdays data is added or not
-          // it will loop throught the users and search, same users data added or not
-          const today = new Date();
-          const yesterday = new Date(today); // Create a new date object with the same value as today
-
-          yesterday.setDate(today.getDate() - 1); // Subtract 1 day from the date
-          const yesterdayMonth = yesterday.toLocaleString('default', {
-            month: 'long',
-          }); // Get the month name
-          const yesterdayDate = yesterday.getDate(); // Get the day of the month
-          let ThisMonth = findTargetObject.months[currMonth];
-          let TempMonthData = [];
-          TempMonthData.length = 0;
-          const MissingFiller = user => {
-            let UserData = ThisMonth.filter(x => x.userId === user);
-            const hasMissing = UserData.length < Number(currDay) - 1;
-
-            if (hasMissing) {
-              console.log('step: 5, There is some missing data');
-              let tempMonth = UserData;
-              const filledMonths = [];
-
-              var largestNumber = tempMonth.some(function (num) {
-                return num.day === new Date().getDate();
-              })
-                ? new Date().getDate()
-                : new Date().getDate() - 1;
-
-              filledMonths.length = 0;
-
-              for (var i = 1; i <= largestNumber; i++) {
-                let existfinder = tempMonth.find(function (num) {
-                  return num.day === i;
-                });
-
-                if (existfinder) {
-                  filledMonths.push(existfinder);
-                } else {
-                  filledMonths.push({
-                    day: i,
-                    startTime: '-',
-                    overTime: '-',
-                    leaveTime: 0,
-                    totalHours: 0,
-                    remarks: '-',
-                    userId: user,
-                    uniqId: yesterdayMonth + generateRandomString(5),
-                  });
-                }
-              }
-
-              // findTargetObject.months[currMonth] = filledMonths;
-              TempMonthData = [...TempMonthData, ...filledMonths];
-              return;
-            }
-          };
-          for (let i = 0; i < userData.length; i++) {
-            MissingFiller(userData[i].userId);
-          }
-          findTargetObject.months[currMonth] = TempMonthData.length
-            ? TempMonthData
-            : findTargetObject.months[currMonth];
-          return;
-        } else {
-          console.log('step: 6, Month doesnot exist');
-          // while the month is not exist it will add month array
-          findTargetObject.months[currMonth.toLowerCase()] = [];
-          onTableData(tempTable);
-          return;
-        }
-        return;
-      }
-    } else {
-      console.log('step: 3, Add iniliazation data');
+    // console.log('step: 2, Not initialized');
+    if (!YearChecker) {
+      // console.log('step: 3, Year doesnot exist');
       onTableData([
         ...tableData,
         {
@@ -277,7 +157,85 @@ export const MainProvider = ({children}) => {
           },
         },
       ]);
-      oninitilized(true);
+      return;
+    } else {
+      // console.log('step: 4, Year is there existing');
+      let tempTable = [...tableData];
+      const MonthChecker = YearChecker.months.hasOwnProperty(currMonth);
+
+      let findTargetObject = tempTable.find(obj => obj.year === currYear);
+      if (MonthChecker) {
+        // console.log('step: 4, Month is existing');
+        // while the month data is exist then it will find the yesterdays data is added or not
+        // it will loop throught the users and search, same users data added or not
+        const today = new Date();
+        const yesterday = new Date(today); // Create a new date object with the same value as today
+
+        yesterday.setDate(today.getDate() - 1); // Subtract 1 day from the date
+        const yesterdayMonth = yesterday.toLocaleString('default', {
+          month: 'long',
+        }); // Get the month name
+        const yesterdayDate = yesterday.getDate(); // Get the day of the month
+        let ThisMonth = findTargetObject.months[currMonth];
+        let TempMonthData = [];
+        TempMonthData.length = 0;
+        const MissingFiller = user => {
+          let UserData = ThisMonth.filter(x => x.userId === user);
+          const hasMissing = UserData.length < Number(currDay) - 1;
+
+          if (hasMissing) {
+            // console.log('step: 5, There is some missing data');
+            let tempMonth = UserData;
+            const filledMonths = [];
+
+            var largestNumber = tempMonth.some(function (num) {
+              return num.day === new Date().getDate();
+            })
+              ? new Date().getDate()
+              : new Date().getDate() - 1;
+
+            filledMonths.length = 0;
+
+            for (var i = 1; i <= largestNumber; i++) {
+              let existfinder = tempMonth.find(function (num) {
+                return num.day === i;
+              });
+
+              if (existfinder) {
+                filledMonths.push(existfinder);
+              } else {
+                filledMonths.push({
+                  day: i,
+                  startTime: '-',
+                  overTime: '-',
+                  leaveTime: 0,
+                  totalHours: 0,
+                  remarks: '-',
+                  userId: user,
+                  uniqId: yesterdayMonth + generateRandomString(5),
+                });
+              }
+            }
+
+            // findTargetObject.months[currMonth] = filledMonths;
+            TempMonthData = [...TempMonthData, ...filledMonths];
+            return;
+          }
+        };
+        for (let i = 0; i < userData.length; i++) {
+          MissingFiller(userData[i].userId);
+        }
+        findTargetObject.months[currMonth] = TempMonthData.length
+          ? TempMonthData
+          : findTargetObject.months[currMonth];
+        return;
+      } else {
+        // console.log('step: 6, Month doesnot exist');
+        // while the month is not exist it will add month array
+        findTargetObject.months[currMonth.toLowerCase()] = [];
+        onTableData(tempTable);
+        return;
+      }
       return;
     }
   }, [tableData]);
@@ -313,6 +271,9 @@ export const MainProvider = ({children}) => {
     onoverTime,
     Remarks,
     onRemarks,
+    initiRetrieved,
+    initilized,
+    oninitilized,
   };
   // +++++++++++++++-------------------+++++++++++++++----------------------+++++++++++++++++++++-------------------
   // from here i'll be using the async storage to store all data
@@ -323,7 +284,7 @@ export const MainProvider = ({children}) => {
     try {
       await AsyncStorage.setItem('@initilize_Key', JSON.stringify(value));
     } catch (error) {
-      console.log('Error storing boolean value:', error);
+      // console.log('Error storing boolean value:', error);
     }
   };
 
@@ -362,7 +323,6 @@ export const MainProvider = ({children}) => {
   };
   // storing Tabledata
   const storeTableData = async value => {
-    console.log('it is executing');
     try {
       await AsyncStorage.setItem('@table_data_Key', JSON.stringify(value));
       // const jsonValue = JSON.stringify(value);
@@ -384,9 +344,15 @@ export const MainProvider = ({children}) => {
     storeActiveUser(ActiveUser);
   }, [ActiveUser]);
   useEffect(() => {
+    if (!Retrieved) {
+      return;
+    }
     storeStartTime(startTime);
   }, [startTime]);
   useEffect(() => {
+    if (!Retrieved) {
+      return;
+    }
     storeOverTime(overTime);
   }, [overTime]);
   useEffect(() => {
@@ -400,7 +366,7 @@ export const MainProvider = ({children}) => {
     if (!Retrieved) {
       return;
     }
-    console.log('tabledata Changed', tableData);
+    // console.log('tabledata Changed', tableData);
     const saveData = async () => {
       try {
         await storeTableData(tableData);
@@ -437,16 +403,7 @@ export const MainProvider = ({children}) => {
       // error reading value
     }
   };
-  const ReadInilization = async () => {
-    try {
-      const value = await AsyncStorage.getItem('@initilize_Key');
-      if (value !== null) {
-        return oninitilized(JSON.parse(value));
-      }
-    } catch (error) {
-      console.log('Error retrieving boolean value:', error);
-    }
-  };
+
   const ReadStartTime = async () => {
     try {
       const value = await AsyncStorage.getItem('@start_time_Key');
@@ -483,7 +440,9 @@ export const MainProvider = ({children}) => {
     try {
       const jsonValue = await AsyncStorage.getItem('@table_data_Key');
       onRetrieved(true);
-      return jsonValue != null ? onTableData(JSON.parse(jsonValue)) : null;
+      return jsonValue != null
+        ? onTableData(JSON.parse(jsonValue))
+        : onTableData([]);
     } catch (e) {
       // error reading value
     }
@@ -506,7 +465,6 @@ export const MainProvider = ({children}) => {
     ReadStartTime();
     ReadOverTime();
     ReadRemarks();
-    ReadInilization();
   }, []);
 
   useEffect(() => {

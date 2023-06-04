@@ -93,15 +93,6 @@ export const DutyTime = ({id}: dutydatatype) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (PrevData) {
-      onstartTime(PrevData.startTime);
-      onoverTime(PrevData.overTime);
-      onpassHours(PrevData.leaveTime);
-      onRemarks(PrevData.remarks);
-    }
-  }, [PrevData]);
-
   const handleTimeConfirm = selectedTime => {
     // Do something with the selected time
     const indianTime = selectedTime.toLocaleTimeString('en-IN', {
@@ -199,7 +190,8 @@ export const DutyTime = ({id}: dutydatatype) => {
         <NMorph
           ofl="hidden"
           borR={20}
-          height={windowHeight / 2 - 80}
+          sadR={7}
+          height={windowHeight / 2 - 40}
           width={windowWidth * 0.8}>
           <CustView borR={20} ofl="hidden" height="100%">
             <LinearGradient
@@ -300,7 +292,7 @@ export const DutyTime = ({id}: dutydatatype) => {
                       <CustView
                         onpress={() => {
                           showTimePicker(
-                            startTime.length > 1 ? startTime : 'start',
+                            startTime.length > 0 ? startTime : 'start',
                           );
                           onactiveStart(true);
                         }}
