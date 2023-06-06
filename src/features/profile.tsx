@@ -117,7 +117,7 @@ const OtherUser = ({name, pf, userId, salph, esic, exCharge}: daataa) => {
             <CusT weight="bold" color="grey">
               SALARY
             </CusT>
-            <CusT>
+            <CusT color="grey">
               {(
                 UserWork.reduce((acc, curr) => {
                   return acc + curr.totalHours;
@@ -139,7 +139,7 @@ const OtherUser = ({name, pf, userId, salph, esic, exCharge}: daataa) => {
             <CusT weight="bold" color="grey">
               PF
             </CusT>
-            <CusT>
+            <CusT color="grey">
               {(UserWork.filter(day => day.totalHours >= 8).length *
                 8 *
                 salph *

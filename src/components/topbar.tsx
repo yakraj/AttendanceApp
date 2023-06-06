@@ -60,7 +60,7 @@ export const Topbar = ({title, isTable, route, pdf}: Props) => {
       channelId: 'doanload-successful-channel',
       /* iOS and Android properties */
       title: 'PDF Downloaded Successfully', // Notification title
-      message: `Please open your download file on file manager.`, // Notification message
+      message: 'Please open your download file on file manager.', // Notification message
       playSound: true, // Play a sound on notification
       soundName: 'default', // Sound to play (default is the default notification sound)
     });
@@ -533,7 +533,7 @@ export const Topbar = ({title, isTable, route, pdf}: Props) => {
                 paddingLeft: 15,
               }}
               colors={['#82FFFF', '#CEFFCA']}>
-              <CusT weight="bold" size={25}>
+              <CusT color="grey" weight="bold" size={25}>
                 {title}
               </CusT>
             </LinearGradient>

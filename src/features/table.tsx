@@ -26,7 +26,7 @@ const TableContent = ({text, width, height, title}: tableCtype) => {
       jus="center"
       border="1px solid grey"
       height={height ? height : '45px'}>
-      <CusT weight={title ? 'bold' : 'normal'} textAlign="center">
+      <CusT color="grey" weight={title ? 'bold' : 'normal'} textAlign="center">
         {text}
       </CusT>
     </CustView>
@@ -66,7 +66,7 @@ export const Table = () => {
   const renderItem = ({item}: renderType) => (
     <CustView
       touchable
-      LongPress={() => navigation.navigate('editData', {id: item.uniqId})}
+      onpress={() => navigation.navigate('editData', {id: item.uniqId})}
       width="100%"
       fdr="row"
       jus="center">
