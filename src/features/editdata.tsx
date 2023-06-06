@@ -63,9 +63,13 @@ export const EditData = () => {
         for (const month in obj.months) {
           const data = obj.months[month];
           result = data.find(item => item.uniqId === id);
-          if (result) break;
+          if (result) {
+            break;
+          }
         }
-        if (result) break;
+        if (result) {
+          break;
+        }
       }
       onPrevData(result);
     }
@@ -102,8 +106,11 @@ export const EditData = () => {
     const format = 'h:mm a'; // Specify the time format
 
     // Parse time strings into moment objects
-    const time1 = moment(startTime, format);
-    const time2 = moment(overTime, format);
+    let NewStartTime = startTime.slice(0, -2) + 'am';
+    let NewOverTime = overTime.slice(0, -2) + 'pm';
+
+    const time1 = moment(NewStartTime, format);
+    const time2 = moment(NewOverTime, format);
 
     // Calculate the difference in minutes
     const timeDiffMinutes = time2.diff(time1, 'minutes');
@@ -229,7 +236,12 @@ export const EditData = () => {
               ofl="hidden"
               width="100%">
               <CustView width="50%">
-                <CusT width="90%" marL={20} weight="bold" size={20}>
+                <CusT
+                  color="grey"
+                  width="90%"
+                  marL={20}
+                  weight="bold"
+                  size={20}>
                   Start
                 </CusT>
                 <CustView
@@ -246,7 +258,7 @@ export const EditData = () => {
                   ali="center"
                   height="45px"
                   borR={10}>
-                  <CusT>{startTime}</CusT>
+                  <CusT color="grey">{startTime}</CusT>
                 </CustView>
               </CustView>
               <CustView width="50%">
@@ -255,6 +267,7 @@ export const EditData = () => {
                   marL={20}
                   textAlign="left"
                   marB={5}
+                  color="grey"
                   weight="bold"
                   size={20}>
                   Over
@@ -275,7 +288,7 @@ export const EditData = () => {
                   ali="center"
                   height="45px"
                   borR={10}>
-                  <CusT>{overTime}</CusT>
+                  <CusT color="grey"> {overTime}</CusT>
                 </CustView>
 
                 <DateTimePickerModal
@@ -295,7 +308,13 @@ export const EditData = () => {
               ofl="hidden"
               width="100%">
               <CustView width="50%">
-                <CusT width="90%" marL={20} marB={5} weight="bold" size={20}>
+                <CusT
+                  color="grey"
+                  width="90%"
+                  marL={20}
+                  marB={5}
+                  weight="bold"
+                  size={20}>
                   Pass Hours
                 </CusT>
                 <TextInput
@@ -314,7 +333,12 @@ export const EditData = () => {
                 />
               </CustView>
               <CustView width="50%">
-                <CusT width="90%" marL={20} weight="bold" size={20}>
+                <CusT
+                  color="grey"
+                  width="90%"
+                  marL={20}
+                  weight="bold"
+                  size={20}>
                   Remarks
                 </CusT>
                 <TextInput

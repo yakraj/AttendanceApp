@@ -85,9 +85,13 @@ export const DutyTime = ({id}: dutydatatype) => {
         for (const month in obj.months) {
           const data = obj.months[month];
           result = data.find(item => item.uniqId === id);
-          if (result) break;
+          if (result) {
+            break;
+          }
         }
-        if (result) break;
+        if (result) {
+          break;
+        }
       }
       onPrevData(result);
     }
@@ -115,8 +119,11 @@ export const DutyTime = ({id}: dutydatatype) => {
     const format = 'h:mm a'; // Specify the time format
 
     // Parse time strings into moment objects
-    const time1 = moment(startTime, format);
-    const time2 = moment(overTime, format);
+    let NewStartTime = startTime.slice(0, -2) + 'am';
+    let NewOverTime = overTime.slice(0, -2) + 'pm';
+
+    const time1 = moment(NewStartTime, format);
+    const time2 = moment(NewOverTime, format);
 
     // Calculate the difference in minutes
     const timeDiffMinutes = time2.diff(time1, 'minutes');
@@ -209,7 +216,7 @@ export const DutyTime = ({id}: dutydatatype) => {
 
               {todayExist ? (
                 <>
-                  <CusT size={40} width="100%" textAlign="center">
+                  <CusT color = 'grey' size={40} width="100%" textAlign="center">
                     Today's data of
                   </CusT>
                   <CusT
@@ -220,7 +227,7 @@ export const DutyTime = ({id}: dutydatatype) => {
                     textAlign="center">
                     {currentUser && currentUser.name}
                   </CusT>
-                  <CusT size={40} width="100%" textAlign="center">
+                  <CusT color = 'grey' size={40} width="100%" textAlign="center">
                     already Exists.
                   </CusT>
                 </>
@@ -305,7 +312,7 @@ export const DutyTime = ({id}: dutydatatype) => {
                         ali="center"
                         height="45px"
                         borR={10}>
-                        <CusT>{startTime}</CusT>
+                        <CusT color = 'grey'>{startTime}</CusT>
                       </CustView>
                     </CustView>
                     <CustView width="50%">
@@ -337,7 +344,7 @@ export const DutyTime = ({id}: dutydatatype) => {
                         ali="center"
                         height="45px"
                         borR={10}>
-                        <CusT>{overTime}</CusT>
+                        <CusT  color = 'grey'>{overTime}</CusT>
                       </CustView>
 
                       <DateTimePickerModal

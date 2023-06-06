@@ -49,7 +49,7 @@ const YearScroll = ({data, onMonths, onactiveYear}: Yeardata) => {
             alignItems: 'center',
           }}
           colors={['#FFA14A', '#E6C0FE']}>
-          <CusT weight="bold" size={20}>
+          <CusT color="grey" weight="bold" size={20}>
             {data.year}
           </CusT>
         </LinearGradient>
@@ -95,7 +95,7 @@ const MonthNames = ({month, data, activeYear}: monthType) => {
             alignItems: 'center',
           }}
           colors={['#FFA14A', '#fff']}>
-          <CusT weight="bold" size={30}>
+          <CusT color="grey" weight="bold" size={30}>
             {month}
           </CusT>
         </LinearGradient>

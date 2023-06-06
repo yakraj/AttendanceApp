@@ -32,7 +32,7 @@ export const BackgroundRect = ({title, data, unatt, pass}: CustBR) => {
         }}
         source={require('./assects/rect.png')}>
         <CustView jus="center" height="100%" width="100%">
-          <CusT size={30} weight="bold">
+          <CusT color="grey" size={30} weight="bold">
             {title}
           </CusT>
           <CustView fdr="row" ali="center">
@@ -115,7 +115,7 @@ function App({navigation}): JSX.Element {
         'https://raw.githubusercontent.com/yakraj/attendance-app-res/main/bignotification.png', // URL of the big picture image
       channelId: 'trial-notification-channel',
       title: 'Daily Attendance Reminder', // Notification title
-      message: `Your working report matters.`,
+      message: 'Your working report matters.',
       WhileIdle: true,
       foreground: true,
       date: new Date(new Date().setHours(18, 0, 0)), // set the notification time to 10 pm
@@ -328,12 +328,15 @@ function App({navigation}): JSX.Element {
                     return acc + curr.totalHours;
                   }, 0) *
                     User[0].salph -
-                  (UserWork.filter(day => day.totalHours >= 4).length *
+                  (UserWork.filter(day => day.totalHours >= 8).length *
                     8 *
                     User[0].salph *
                     User[0].pf) /
                     100 -
-                  User[0].esic -
+                  UserWork.filter(day => day.totalHours >= 8).length *
+                    8 *
+                    User[0].salph *
+                    0.0075 -
                   User[0].exCharge
                 )
                   .toString()
@@ -354,13 +357,35 @@ function App({navigation}): JSX.Element {
                   100}
             </CusT>
           </CustView>
+          <CustView fdr="row">
+            <CusT size={20} weight="bold" color="grey">
+              ESIC:
+            </CusT>
+            <CusT size={15} color="grey">
+              {'   Rs. '}
+              {User[0] &&
+                UserWork.filter(day => day.totalHours >= 8).length *
+                  8 *
+                  User[0].salph *
+                  0.0075}
+            </CusT>
+          </CustView>
+          <CustView fdr="row">
+            <CusT size={20} weight="bold" color="grey">
+              M. deduction:
+            </CusT>
+            <CusT size={15} color="grey">
+              {'   Rs. '}
+              {User[0] && User[0].exCharge}
+            </CusT>
+          </CustView>
         </CustView>
       </ImageBackground>
       {/* <CustView
         padd={10}
         border="1px solid grey"
         touchable
-        onpress={() => sendTrialNotification()}> 
+        onpress={() => sendTrialNotification()}>
         <CusT>Notificate</CusT>
       </CustView> */}
       <BottomBar navigation={navigation} />

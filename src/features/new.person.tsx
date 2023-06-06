@@ -35,7 +35,7 @@ const TextArea = ({title, val, change, placeholder, Numeric}: Texttypes) => {
             paddingLeft: 25,
           }}
           colors={['#93FFF8', '#8B757509']}>
-          <CusT marB={5} weight="bold" size={20}>
+          <CusT color = 'grey' marB={5} weight="bold" size={20}>
             {title}
           </CusT>
           <TextInput
@@ -123,7 +123,7 @@ export const AddPerson = () => {
                 }}
                 colors={['#93FFF8', '#8B757509']}>
                 <CustView width="50%">
-                  <CusT width="90%" marL={20} marB={5} weight="bold" size={20}>
+                  <CusT color = 'grey' width="90%" marL={20} marB={5} weight="bold" size={20}>
                     PF
                   </CusT>
                   <CustView
@@ -176,7 +176,7 @@ export const AddPerson = () => {
                 <CustView width="50%">
                   <CusT
                     width="90%"
-                    marL={20}
+                    marL={20} color = 'grey'
                     textAlign="left"
                     marB={5}
                     weight="bold"
