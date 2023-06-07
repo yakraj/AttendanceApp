@@ -118,21 +118,22 @@ const OtherUser = ({name, pf, userId, salph, esic, exCharge}: daataa) => {
               SALARY
             </CusT>
             <CusT color="grey">
-              {(
+              {parseFloat(
                 UserWork.reduce((acc, curr) => {
                   return acc + curr.totalHours;
                 }, 0) *
                   salph -
-                (UserWork.filter(day => day.totalHours >= 8).length *
-                  8 *
-                  salph *
-                  pf) /
-                  100 -
-                esic -
-                exCharge
-              )
-                .toString()
-                .substring(0, 7)}
+                  (UserWork.filter(day => day.totalHours >= 8).length *
+                    8 *
+                    salph *
+                    pf) /
+                    100 -
+                  UserWork.filter(day => day.totalHours >= 8).length *
+                    8 *
+                    salph *
+                    0.0075 -
+                  exCharge,
+              ).toFixed(2)}
             </CusT>
           </CustView>
           <CustView>
@@ -241,14 +242,7 @@ export const Profile = () => {
               : {User[0] && User[0].pf}%
             </CusT>
           </CustView>
-          <CustView fdr="row" ali="flex-start" width="90%">
-            <CusT size={20} weight="bold" color="grey">
-              ESIC
-            </CusT>
-            <CusT size={20} color="grey">
-              :Rs. {User[0] && User[0].esic}
-            </CusT>
-          </CustView>
+
           <CustView fdr="row" ali="flex-start" width="90%">
             <CusT size={20} weight="bold" color="grey">
               Extra Charges
@@ -267,7 +261,6 @@ export const Profile = () => {
                 userId={x.userId}
                 name={x.name}
                 salph={x.salph}
-                esic={x.esic}
                 exCharge={x.exCharge}
                 salary={454}
                 pf={x.pf}

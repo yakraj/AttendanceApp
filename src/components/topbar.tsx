@@ -107,7 +107,7 @@ export const Topbar = ({title, isTable, route, pdf}: Props) => {
     let otSalary = OThours * user[0].salph;
     // find sum salary
     let sumSalary =
-      basicSalary + otSalary - user[0].esic - user[0].exCharge - PF;
+      basicSalary + otSalary - basicSalary * 0.0075 - user[0].exCharge - PF;
 
     let options = {
       html: ` 

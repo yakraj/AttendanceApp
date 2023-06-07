@@ -61,7 +61,7 @@ export const MainProvider = ({children}) => {
     salph: string,
     pf: string,
     pfsel: string,
-    esic: string,
+    esic: boolean,
     exCharge: string,
   ) => {
     let userName = name + generateRandomString(4);
@@ -70,7 +70,7 @@ export const MainProvider = ({children}) => {
       company: '',
       salph: 0,
       pf: 0,
-      esic: 0,
+      esic: false,
       exCharge: 0,
       userId: '',
     };
@@ -78,7 +78,7 @@ export const MainProvider = ({children}) => {
     TempUser.company = Company;
     TempUser.salph = Number(salph);
     TempUser.pf = pfsel === 'yes' ? Number(pf) : 0;
-    TempUser.esic = Number(esic);
+    TempUser.esic = esic;
     TempUser.exCharge = Number(exCharge);
     TempUser.userId = userName;
     onUserData([...userData, TempUser]);
@@ -128,11 +128,11 @@ export const MainProvider = ({children}) => {
       TempUser.salph !== Number(salph) ? Number(salph) : TempUser.salph;
     TempUser.pf = TempUser.pf !== Number(pf) ? Number(pf) : TempUser.pf;
     TempUser.esic =
-      TempUser.esic !== Number(esic) ? Number(esic) : TempUser.esic;
-    TempUser.exCharge =
-      TempUser?.exCharge !== Number(exCharge)
-        ? Number(exCharge)
-        : TempUser.exCharge;
+      // TempUser.esic !== Number(esic) ? Number(esic) : TempUser.esic;
+      TempUser.exCharge =
+        TempUser?.exCharge !== Number(exCharge)
+          ? Number(exCharge)
+          : TempUser.exCharge;
 
     onUserData(TempUsers);
   };

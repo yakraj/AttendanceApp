@@ -103,17 +103,22 @@ export const Retrieve = () => {
               <MyImage source={require('../../assects/rs.png')} />
               <CusT size={60} weight="bold" color="grey">
                 {User[0] &&
-                  UserWork.reduce((acc, curr) => {
-                    return acc + curr.totalHours;
-                  }, 0) *
-                    User[0].salph -
-                    User[0].esic -
-                    User[0].exCharge -
-                    (UserWork.filter(day => day.totalHours > 4).length *
-                      8 *
-                      User[0].salph *
-                      User[0].pf) /
-                      100}
+                  parseFloat(
+                    UserWork.reduce((acc, curr) => {
+                      return acc + curr.totalHours;
+                    }, 0) *
+                      User[0].salph -
+                      (UserWork.filter(day => day.totalHours >= 8).length *
+                        8 *
+                        User[0].salph *
+                        User[0].pf) /
+                        100 -
+                      UserWork.filter(day => day.totalHours >= 8).length *
+                        8 *
+                        User[0].salph *
+                        0.0075 -
+                      User[0].exCharge,
+                  ).toFixed(2)}
               </CusT>
             </CustView>
             <CustView fdr="row">
@@ -123,12 +128,38 @@ export const Retrieve = () => {
               <CusT size={15} color="grey">
                 {'   Rs. '}
                 {User[0] &&
-                  (UserWork.filter(day => day.totalHours > 4).length *
+                  (UserWork.filter(day => day.totalHours >= 8).length *
                     8 *
                     User[0].salph *
                     User[0].pf) /
                     100}
               </CusT>
+            </CustView>
+            <CustView width="100%" fdr="row" jus="space-between">
+              <CustView fdr="row">
+                <CusT size={20} weight="bold" color="grey">
+                  ESIC:
+                </CusT>
+                <CusT size={15} color="grey">
+                  {'   Rs. '}
+                  {parseFloat(
+                    User[0] &&
+                      UserWork.filter(day => day.totalHours >= 8).length *
+                        8 *
+                        User[0].salph *
+                        0.0075,
+                  ).toFixed(2)}
+                </CusT>
+              </CustView>
+              <CustView fdr="row">
+                <CusT size={20} weight="bold" color="grey">
+                  M. deduction:
+                </CusT>
+                <CusT size={15} color="grey">
+                  {'   Rs. '}
+                  {User[0] && User[0].exCharge}
+                </CusT>
+              </CustView>
             </CustView>
           </CustView>
         </ImageBackground>
