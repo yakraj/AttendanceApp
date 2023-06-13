@@ -10,7 +10,8 @@ export const Retrieve = () => {
   const router = useRoute();
   const {data, month, year} = router.params;
 
-  const {ActiveUser, tableData, userData, CurMOD} = useContext(MainContext);
+  const {ActiveUser, tableData, userData, CurMOD, SalaryCalculator} =
+    useContext(MainContext);
   const [User, setUser] = React.useState<any>([]);
   const [TopObject, setTopObject] = React.useState<any>([]);
   const [UserWork, setUserWork] = React.useState<any>([]);
@@ -102,23 +103,7 @@ export const Retrieve = () => {
             <CustView fdr="row" ali="flex-start">
               <MyImage source={require('../../assects/rs.png')} />
               <CusT size={60} weight="bold" color="grey">
-                {User[0] &&
-                  parseFloat(
-                    UserWork.reduce((acc, curr) => {
-                      return acc + curr.totalHours;
-                    }, 0) *
-                      User[0].salph -
-                      (UserWork.filter(day => day.totalHours >= 8).length *
-                        8 *
-                        User[0].salph *
-                        User[0].pf) /
-                        100 -
-                      UserWork.filter(day => day.totalHours >= 8).length *
-                        8 *
-                        User[0].salph *
-                        0.0075 -
-                      User[0].exCharge,
-                  ).toFixed(2)}
+                {User[0] && SalaryCalculator(ActiveUser, year, month).salary}
               </CusT>
             </CustView>
             <CustView fdr="row">
@@ -127,12 +112,7 @@ export const Retrieve = () => {
               </CusT>
               <CusT size={15} color="grey">
                 {'   Rs. '}
-                {User[0] &&
-                  (UserWork.filter(day => day.totalHours >= 8).length *
-                    8 *
-                    User[0].salph *
-                    User[0].pf) /
-                    100}
+                {User[0] && SalaryCalculator(ActiveUser, year, month).pf}
               </CusT>
             </CustView>
             <CustView width="100%" fdr="row" jus="space-between">
@@ -142,13 +122,7 @@ export const Retrieve = () => {
                 </CusT>
                 <CusT size={15} color="grey">
                   {'   Rs. '}
-                  {parseFloat(
-                    User[0] &&
-                      UserWork.filter(day => day.totalHours >= 8).length *
-                        8 *
-                        User[0].salph *
-                        0.0075,
-                  ).toFixed(2)}
+                  {User[0] && SalaryCalculator(ActiveUser, year, month).esic}
                 </CusT>
               </CustView>
               <CustView fdr="row">

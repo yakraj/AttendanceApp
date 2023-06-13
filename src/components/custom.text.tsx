@@ -1,6 +1,15 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import {TextProps} from 'react-native';
+import {Dimensions, PixelRatio, TextProps} from 'react-native';
+
+const deviceWidth = Dimensions.get('window').width;
+
+const getAdjustedFontSize = (fontSize: number) => {
+  const ratio = fontSize / 400; // Set the base font size for a screen width of 400
+  const adjustedFontSize = PixelRatio.roundToNearestPixel(deviceWidth * ratio);
+  return Math.round(adjustedFontSize);
+};
+
 interface CustomTextProps extends TextProps {
   size: number;
   marL: number;
@@ -40,7 +49,7 @@ interface CustomTextProps extends TextProps {
 }
 
 const CusT = styled.Text<CustomTextProps>`
-  ${({size}) => size && `font-size: ${size}px`};
+  ${({size}) => size && `font-size: ${getAdjustedFontSize(size)}px`};
   ${({top}) => top && `top: ${top}px`};
   ${({width}) => width && `width: 100%`};
   ${({left}) => left && `right: ${left}`};

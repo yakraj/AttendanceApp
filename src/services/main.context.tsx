@@ -115,7 +115,7 @@ export const MainProvider = ({children}) => {
     Company: string,
     salph: string,
     pf: string,
-    esic: string,
+    esic: boolean,
     exCharge: string,
     user: string,
   ) => {
@@ -127,120 +127,74 @@ export const MainProvider = ({children}) => {
     TempUser.salph =
       TempUser.salph !== Number(salph) ? Number(salph) : TempUser.salph;
     TempUser.pf = TempUser.pf !== Number(pf) ? Number(pf) : TempUser.pf;
-    TempUser.esic =
-      // TempUser.esic !== Number(esic) ? Number(esic) : TempUser.esic;
-      TempUser.exCharge =
-        TempUser?.exCharge !== Number(exCharge)
-          ? Number(exCharge)
-          : TempUser.exCharge;
+    TempUser.esic = TempUser.esic !== esic ? esic : TempUser.esic;
+    TempUser.exCharge =
+      TempUser?.exCharge !== Number(exCharge)
+        ? Number(exCharge)
+        : TempUser.exCharge;
 
     onUserData(TempUsers);
   };
 
   // data checker and retriever
-  useEffect(() => {
-    if (!Retrieved) {
-      return;
-    }
 
-    // console.log('step: 1, entered inside useEffect');
-    const YearChecker = tableData.find(x => x.year == currYear);
-    // console.log('step: 2, Not initialized');
-    if (!YearChecker) {
-      // console.log('step: 3, Year doesnot exist');
-      onTableData([
-        ...tableData,
-        {
-          year: currYear,
-          months: {
-            [currMonth]: [],
-          },
-        },
-      ]);
-      return;
-    } else {
-      // console.log('step: 4, Year is there existing');
-      let tempTable = [...tableData];
-      const MonthChecker = YearChecker.months.hasOwnProperty(currMonth);
+  // this is salary calculator
+  const SalaryCalculator = (user: string, year: number, month: string) => {
+    let ThisYear = tableData.find(x => x.year === year);
+    let findMonth = ThisYear.months[month];
+    let finduer = userData.filter(id => id.userId === user);
+    let findUsersData = findMonth.filter(id => id.userId === user);
 
-      let findTargetObject = tempTable.find(obj => obj.year === currYear);
-      if (MonthChecker) {
-        // console.log('step: 4, Month is existing');
-        // while the month data is exist then it will find the yesterdays data is added or not
-        // it will loop throught the users and search, same users data added or not
-        const today = new Date();
-        const yesterday = new Date(today); // Create a new date object with the same value as today
+    let withoutsalary =
+      findUsersData.reduce((acc, curr) => {
+        return acc + curr.totalHours;
+      }, 0) * finduer[0].salph;
 
-        yesterday.setDate(today.getDate() - 1); // Subtract 1 day from the date
-        const yesterdayMonth = yesterday.toLocaleString('default', {
-          month: 'long',
-        }); // Get the month name
-        const yesterdayDate = yesterday.getDate(); // Get the day of the month
-        let ThisMonth = findTargetObject.months[currMonth];
-        let TempMonthData = [];
-        TempMonthData.length = 0;
-        const MissingFiller = user => {
-          let UserData = ThisMonth.filter(x => x.userId === user);
-          const hasMissing = UserData.length < Number(currDay) - 1;
+    let salary =
+      findUsersData.reduce((acc, curr) => {
+        return acc + curr.totalHours;
+      }, 0) *
+        finduer[0].salph -
+      (findUsersData.filter(day => day.totalHours >= 8).length *
+        8 *
+        finduer[0].salph *
+        finduer[0].pf) /
+        100 -
+      (finduer[0].esic
+        ? findUsersData.filter(day => day.totalHours >= 8).length *
+          8 *
+          finduer[0].salph *
+          0.0075
+        : 0) -
+      finduer[0].exCharge;
 
-          if (hasMissing) {
-            // console.log('step: 5, There is some missing data');
-            let tempMonth = UserData;
-            const filledMonths = [];
+    let epf =
+      (findUsersData.filter(day => day.totalHours >= 8).length *
+        8 *
+        finduer[0].salph *
+        finduer[0].pf) /
+      100;
+    // return salary;
+    // it will return the esic
+    let esicc =
+      findUsersData.filter(day => day.totalHours >= 8).length *
+      8 *
+      finduer[0].salph *
+      0.0075;
 
-            var largestNumber = tempMonth.some(function (num) {
-              return num.day === new Date().getDate();
-            })
-              ? new Date().getDate()
-              : new Date().getDate() - 1;
+    return {
+      withoutsalary: withoutsalary.toFixed(2),
+      salary: salary.toFixed(2),
+      pf: epf.toFixed(2),
+      esic: finduer[0].esic ? esicc.toFixed(2) : 0,
+    };
+  };
 
-            filledMonths.length = 0;
+  // this is pf calculator
 
-            for (var i = 1; i <= largestNumber; i++) {
-              let existfinder = tempMonth.find(function (num) {
-                return num.day === i;
-              });
+  const PfCalculator = () => {};
 
-              if (existfinder) {
-                filledMonths.push(existfinder);
-              } else {
-                filledMonths.push({
-                  day: i,
-                  startTime: '-',
-                  overTime: '-',
-                  leaveTime: 0,
-                  totalHours: 0,
-                  remarks: '-',
-                  userId: user,
-                  uniqId: yesterdayMonth + generateRandomString(5),
-                });
-              }
-            }
-
-            // findTargetObject.months[currMonth] = filledMonths;
-            TempMonthData = [...TempMonthData, ...filledMonths];
-            return;
-          }
-        };
-        for (let i = 0; i < userData.length; i++) {
-          MissingFiller(userData[i].userId);
-        }
-        findTargetObject.months[currMonth] = TempMonthData.length
-          ? TempMonthData
-          : findTargetObject.months[currMonth];
-        return;
-      } else {
-        // console.log('step: 6, Month doesnot exist');
-        // while the month is not exist it will add month array
-        findTargetObject.months[currMonth.toLowerCase()] = [];
-        onTableData(tempTable);
-        return;
-      }
-      return;
-    }
-  }, [tableData]);
-
-  // Create today data
+  // this is esic calculator
 
   // export data
   const contextValue = {
@@ -274,6 +228,7 @@ export const MainProvider = ({children}) => {
     initiRetrieved,
     initilized,
     oninitilized,
+    SalaryCalculator,
   };
   // +++++++++++++++-------------------+++++++++++++++----------------------+++++++++++++++++++++-------------------
   // from here i'll be using the async storage to store all data
@@ -440,9 +395,14 @@ export const MainProvider = ({children}) => {
     try {
       const jsonValue = await AsyncStorage.getItem('@table_data_Key');
       onRetrieved(true);
-      return jsonValue != null
-        ? onTableData(JSON.parse(jsonValue))
-        : onTableData([]);
+
+      if (jsonValue != null) {
+        onTableData(JSON.parse(jsonValue));
+        // console.log('I executed fist');
+        return jsonValue;
+      } else {
+        onTableData([]);
+      }
     } catch (e) {
       // error reading value
     }
@@ -452,20 +412,148 @@ export const MainProvider = ({children}) => {
     try {
       const jsonValue = await AsyncStorage.getItem('@user_data_key');
       onRetrieveUser(true);
-      return jsonValue != null ? onUserData(JSON.parse(jsonValue)) : null;
+      if (jsonValue != null) {
+        onUserData(JSON.parse(jsonValue));
+        return JSON.parse(jsonValue);
+      } else {
+        null;
+      }
     } catch (e) {
       // error reading value
     }
   };
+  // this is validator
+
+  // const Validator = (data: any, userData: any) => {
+  //   console.log('step: 1, entered inside useEffect');
+
+  // };
+  useEffect(() => {
+    const checkTabledata = () => {
+      Promise.all([ReadTableData(), ReadUserData()])
+        .then(([Tabledata, userData]) => {
+          // console.log('until here this is good');
+          let tempTable = Tabledata ? JSON.parse(Tabledata) : [];
+          let YearChecker = tempTable.find(x => x.year == currYear);
+
+          // console.log('step: 2, Not initialized');
+          if (!YearChecker) {
+            // console.log('step: 3, Year doesnot exist');
+            onTableData([
+              ...tableData,
+              {
+                year: currYear,
+                months: {
+                  [currMonth]: [],
+                },
+              },
+            ]);
+            return;
+          } else {
+            // console.log('step: 4, Year is there existing');
+            const MonthChecker = YearChecker.months.hasOwnProperty(currMonth);
+
+            let findTargetObject = tempTable.find(obj => obj.year === currYear);
+            if (MonthChecker) {
+              // console.log('step: 4, Month is existing');
+              // while the month data is exist then it will find the yesterdays data is added or not
+              // it will loop throught the users and search, same users data added or not
+              const today = new Date();
+              const yesterday = new Date(today); // Create a new date object with the same value as today
+
+              yesterday.setDate(today.getDate() - 1); // Subtract 1 day from the date
+              const yesterdayMonth = yesterday.toLocaleString('default', {
+                month: 'long',
+              }); // Get the month name
+              const yesterdayDate = yesterday.getDate(); // Get the day of the month
+              let ThisMonth = findTargetObject.months[currMonth];
+              let TempMonthData = [];
+              TempMonthData.length = 0;
+              const MissingFiller = user => {
+                let UserData = ThisMonth.filter(x => x.userId === user);
+                const hasMissing = UserData.length < Number(currDay) - 1;
+                if (hasMissing) {
+                  // console.log('step: 5, There is some missing data');
+                  let tempMonth = UserData;
+                  const filledMonths = [];
+
+                  var largestNumber = tempMonth.some(function (num) {
+                    return num.day === new Date().getDate();
+                  })
+                    ? new Date().getDate()
+                    : new Date().getDate() - 1;
+
+                  filledMonths.length = 0;
+
+                  for (var i = 1; i <= largestNumber; i++) {
+                    let existfinder = tempMonth.find(function (num) {
+                      return num.day == i;
+                    });
+
+                    if (existfinder) {
+                      filledMonths.push(existfinder);
+                    } else {
+                      filledMonths.push({
+                        day: i,
+                        startTime: '-',
+                        overTime: '-',
+                        leaveTime: 0,
+                        totalHours: 0,
+                        remarks: '-',
+                        userId: user,
+                        uniqId: yesterdayMonth + generateRandomString(5),
+                      });
+                    }
+                  }
+
+                  // findTargetObject.months[currMonth] = filledMonths;
+                  TempMonthData = [...TempMonthData, ...filledMonths];
+                  console.log(tempMonth, filledMonths);
+                  onTableData(tempTable);
+                  return;
+                }
+              };
+              for (let i = 0; i < userData.length; i++) {
+                MissingFiller(userData[i].userId);
+                // console.log('UserData');
+              }
+              findTargetObject.months[currMonth] = TempMonthData.length
+                ? TempMonthData
+                : findTargetObject.months[currMonth];
+
+              return;
+            } else {
+              // console.log('step: 6, Month doesnot exist');
+              // while the month is not exist it will add month array
+              findTargetObject.months[currMonth.toLowerCase()] = [];
+
+              onTableData(tempTable);
+
+              return;
+            }
+            return;
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    };
+    checkTabledata();
+  }, []);
+
+  useEffect(() => {
+    console.log('changed');
+  }, [tableData]);
 
   useEffect(() => {
     ReadActiveUser();
-    ReadTableData();
     ReadUserData();
     ReadStartTime();
     ReadOverTime();
     ReadRemarks();
   }, []);
+
+  // this is special which also validates the data inside table
 
   useEffect(() => {
     let ThisYear = tableData.find(x => x.year === new Date().getFullYear());

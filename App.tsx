@@ -1,7 +1,7 @@
 import {BottomBar} from './src/components/bottomBar';
 import React, {useContext, useEffect, useState} from 'react';
 import {CustView, MyImage} from './src/components/devider';
-import {ImageBackground} from 'react-native';
+import {ImageBackground, Switch} from 'react-native';
 import CusT from './src/components/custom.text';
 import {
   MainContext,
@@ -78,7 +78,11 @@ function App({navigation}): JSX.Element {
     initiRetrieved,
     initilized,
     oninitilized,
+    SalaryCalculator,
   } = useContext(MainContext);
+
+  const [switchdata, onswitch] = useState<Boolean>(false);
+  const toggleSwitch = () => onswitch(previousState => !previousState);
   const [User, setUser] = React.useState<any>([]);
   const [UserWork, setUserWork] = React.useState<any>([]);
 
@@ -107,7 +111,6 @@ function App({navigation}): JSX.Element {
   // these are for each 3 minutes
 
   const ScheduleDailyReminder = () => {
-    console.log('1321321321321321321321321 123132121 this function executed');
     PushNotification.localNotificationSchedule({
       largeIconUrl:
         'https://raw.githubusercontent.com/yakraj/attendance-app-res/main/notificationicon.png', // URL of the large icon image
@@ -295,7 +298,7 @@ function App({navigation}): JSX.Element {
         />
         <BackgroundRect
           unatt="10"
-          title="UnAtt"
+          title="Absent"
           data={UserWork.filter(day => day.totalHours === 0).length}
         />
       </CustView>
@@ -313,32 +316,32 @@ function App({navigation}): JSX.Element {
           jus="space-around"
           height="100%"
           width="100%">
-          <CusT size={30} weight="bold" color="grey">
-            Salary
-          </CusT>
+          <CustView fdr="row" width="100%" jus="space-between">
+            <CusT size={30} weight="bold" color="grey">
+              Salary
+            </CusT>
+            <Switch
+              trackColor={{false: 'red', true: 'green'}}
+              thumbColor={switchdata ? '#f5dd4b' : '#f4f3f4'}
+              onValueChange={toggleSwitch}
+              value={switchdata}
+            />
+          </CustView>
+
           <CusT size={10} weight="regular" color="grey">
-            After Cutting all charges (pf,esic,charges)
+            {switchdata
+              ? 'Whithout any cuttings'
+              : 'After Cutting all charges (pf,esic,charges)'}
           </CusT>
           <CustView fdr="row" ali="flex-start">
             <MyImage source={require('./assects/rs.png')} />
             <CusT size={60} weight="bold" color="grey">
               {User[0] &&
-                parseFloat(
-                  UserWork.reduce((acc, curr) => {
-                    return acc + curr.totalHours;
-                  }, 0) *
-                    User[0].salph -
-                    (UserWork.filter(day => day.totalHours >= 8).length *
-                      8 *
-                      User[0].salph *
-                      User[0].pf) /
-                      100 -
-                    UserWork.filter(day => day.totalHours >= 8).length *
-                      8 *
-                      User[0].salph *
-                      0.0075 -
-                    User[0].exCharge,
-                ).toFixed(2)}
+                (switchdata
+                  ? SalaryCalculator(User[0].userId, currYear, currMonth)
+                      .withoutsalary
+                  : SalaryCalculator(User[0].userId, currYear, currMonth)
+                      .salary)}
             </CusT>
           </CustView>
           <CustView fdr="row">
@@ -348,11 +351,7 @@ function App({navigation}): JSX.Element {
             <CusT size={15} color="grey">
               {'   Rs. '}
               {User[0] &&
-                (UserWork.filter(day => day.totalHours >= 8).length *
-                  8 *
-                  User[0].salph *
-                  User[0].pf) /
-                  100}
+                SalaryCalculator(User[0].userId, currYear, currMonth).pf}
             </CusT>
           </CustView>
           <CustView width="100%" fdr="row" jus="space-between">
@@ -362,13 +361,8 @@ function App({navigation}): JSX.Element {
               </CusT>
               <CusT size={15} color="grey">
                 {'   Rs. '}
-                {parseFloat(
-                  User[0] &&
-                    UserWork.filter(day => day.totalHours >= 8).length *
-                      8 *
-                      User[0].salph *
-                      0.0075,
-                ).toFixed(2)}
+                {User[0] &&
+                  SalaryCalculator(User[0].userId, currYear, currMonth).esic}
               </CusT>
             </CustView>
             <CustView fdr="row">

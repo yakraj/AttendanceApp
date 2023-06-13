@@ -14,7 +14,7 @@ export const DutyAdd = () => {
     <>
       <Topbar title="Add duty" />
       <CustView height="100%" bcC="#D9D9D9">
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps="always">
           <CustView marB={userData.length * 20} jus="center" ali="center">
             {userData.map((x, i) => {
               return <DutyTime key={i} id={x.userId} />;

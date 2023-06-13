@@ -119,6 +119,7 @@ export const AllData = () => {
       {/* from here th year data starts */}
       <CustView>
         <ScrollView
+          keyboardShouldPersistTaps="always"
           style={{
             height: 60,
             marginTop: 20,

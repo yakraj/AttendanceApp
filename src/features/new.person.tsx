@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {Topbar} from '../components/topbar';
-import {TextInput, ScrollView, Alert} from 'react-native';
+import {TextInput, ScrollView, Switch, Alert} from 'react-native';
 import {CustView, NMorph} from '../components/devider';
 import CusT from '../components/custom.text';
 import LinearGradient from 'react-native-linear-gradient';
@@ -35,7 +35,7 @@ const TextArea = ({title, val, change, placeholder, Numeric}: Texttypes) => {
             paddingLeft: 25,
           }}
           colors={['#93FFF8', '#8B757509']}>
-          <CusT color = 'grey' marB={5} weight="bold" size={20}>
+          <CusT color="grey" marB={5} weight="bold" size={20}>
             {title}
           </CusT>
           <TextInput
@@ -65,15 +65,16 @@ export const AddPerson = () => {
   const [Exch, onExch] = useState<string>('');
   const [Pf, onPf] = useState<string>('12');
   const [Pfsel, onPfsel] = useState<string>('');
-  const [Esic, onEsic] = useState<string>('');
+  const [Esic, onEsic] = useState<boolean>(false);
   const [Company, onCompany] = useState<string>('');
 
+  const toggleSwitch = () => onEsic(previousState => !previousState);
   const navigation = useNavigation();
   return (
     <>
       <Topbar title="Add A Person" />
       {/* this is full container  */}
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="always">
         <CustView marT={20}>
           <TextArea
             placeholder="Person Name"
@@ -92,14 +93,14 @@ export const AddPerson = () => {
             val={SalP}
             Numeric
             change={onSalP}
-            title="Salary/Hour"
+            title="Salary Per Hour"
           />
           <TextArea
-            placeholder="Extra Charges"
+            placeholder="Monthly Deductions"
             val={Exch}
             Numeric
             change={onExch}
-            title="Extra Charges"
+            title="Monthly Deductions"
           />
           {/* this is pf and esic section */}
 
@@ -123,7 +124,13 @@ export const AddPerson = () => {
                 }}
                 colors={['#93FFF8', '#8B757509']}>
                 <CustView width="50%">
-                  <CusT color = 'grey' width="90%" marL={20} marB={5} weight="bold" size={20}>
+                  <CusT
+                    color="grey"
+                    width="90%"
+                    marL={20}
+                    marB={5}
+                    weight="bold"
+                    size={20}>
                     PF
                   </CusT>
                   <CustView
@@ -176,26 +183,19 @@ export const AddPerson = () => {
                 <CustView width="50%">
                   <CusT
                     width="90%"
-                    marL={20} color = 'grey'
+                    marL={20}
+                    color="grey"
                     textAlign="left"
                     marB={5}
                     weight="bold"
                     size={20}>
                     ESIC
                   </CusT>
-                  <TextInput
+                  <Switch
+                    trackColor={{false: 'red', true: 'green'}}
+                    thumbColor={Esic ? '#f5dd4b' : '#f4f3f4'}
+                    onValueChange={toggleSwitch}
                     value={Esic}
-                    keyboardType="numeric"
-                    onChangeText={text => onEsic(text)}
-                    style={{
-                      borderWidth: 1,
-                      borderColor: 'grey',
-                      fontSize: 20,
-                      width: '90%',
-                      paddingLeft: 20,
-                      borderRadius: 10,
-                    }}
-                    placeholder="Esic Charge"
                   />
                 </CustView>
               </LinearGradient>

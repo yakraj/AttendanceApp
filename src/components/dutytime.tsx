@@ -159,6 +159,9 @@ export const DutyTime = ({id}: dutydatatype) => {
   };
   // update data of user
   const UpdateData = () => {
+    if (startTime === '-' || overTime === '-') {
+      return;
+    }
     let tempObject = {
       day: currDay,
       startTime: startTime,
@@ -175,7 +178,7 @@ export const DutyTime = ({id}: dutydatatype) => {
     onupdaTer(new Date());
 
     onTableData(tempTable);
-    Alert.alert('Created', 'Successfully Created new user!', [{text: 'OK'}]);
+    Alert.alert('Created', 'Successfully Created todays data!', [{text: 'OK'}]);
   };
 
   useEffect(() => {
@@ -187,6 +190,23 @@ export const DutyTime = ({id}: dutydatatype) => {
       var todayExist = tempYear.months[currMonth].some(
         x => x.day === currDay && x.userId === currentUser.userId,
       );
+      let yesterdaydata = tempYear.months[currMonth].find(
+        x => x.day === currDay - 1 && x.userId === currentUser.userId,
+      );
+      if (yesterdaydata) {
+        yesterdaydata.startTime !== '-'
+          ? onstartTime(yesterdaydata.startTime)
+          : startTime !== '-'
+          ? null
+          : onstartTime('7:00 AM');
+        yesterdaydata.overTime !== '-'
+          ? onoverTime(yesterdaydata.overTime)
+          : overTime !== '-'
+          ? null
+          : onoverTime('7:00 PM');
+
+        // console.log(yesterdaydata.startTime, yesterdaydata.overTime);
+      }
       ontodayExist(todayExist);
     }
   }, [tableData, currentUser, updaTer]);
@@ -216,7 +236,7 @@ export const DutyTime = ({id}: dutydatatype) => {
 
               {todayExist ? (
                 <>
-                  <CusT color = 'grey' size={40} width="100%" textAlign="center">
+                  <CusT color="grey" size={40} width="100%" textAlign="center">
                     Today's data of
                   </CusT>
                   <CusT
@@ -227,7 +247,7 @@ export const DutyTime = ({id}: dutydatatype) => {
                     textAlign="center">
                     {currentUser && currentUser.name}
                   </CusT>
-                  <CusT color = 'grey' size={40} width="100%" textAlign="center">
+                  <CusT color="grey" size={40} width="100%" textAlign="center">
                     already Exists.
                   </CusT>
                 </>
@@ -312,7 +332,7 @@ export const DutyTime = ({id}: dutydatatype) => {
                         ali="center"
                         height="45px"
                         borR={10}>
-                        <CusT color = 'grey'>{startTime}</CusT>
+                        <CusT color="grey">{startTime}</CusT>
                       </CustView>
                     </CustView>
                     <CustView width="50%">
@@ -344,7 +364,7 @@ export const DutyTime = ({id}: dutydatatype) => {
                         ali="center"
                         height="45px"
                         borR={10}>
-                        <CusT  color = 'grey'>{overTime}</CusT>
+                        <CusT color="grey">{overTime}</CusT>
                       </CustView>
 
                       <DateTimePickerModal

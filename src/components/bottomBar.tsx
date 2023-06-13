@@ -27,60 +27,40 @@ export const BottomBar = ({navigation}: Props) => {
   });
 
   return (
-    <CustView width="100%" position="absolute" Bottom="0">
-      <ImageBackground
-        style={{
-          height: 80,
-          width: '100%',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+    <CustView
+      fdr="row"
+      jus="space-between"
+      width="100%"
+      position="absolute"
+      Bottom="0">
+      <CustView
+        onpress={() => {
+          if (ActiveUser) {
+            navigation.navigate('table', {
+              year: getYear,
+              month: getMonth,
+              userId: ActiveUser,
+            });
+          }
         }}
-        source={require('../../assects/navbar.png')}>
-        <CustView
-          onpress={() => {
-            if (ActiveUser) {
-              navigation.navigate('table', {
-                year: getYear,
-                month: getMonth,
-                userId: ActiveUser,
-              });
-            }
-          }}
-          marL={20}
-          tblC="blue"
-          marT={5}
-          touchable
-          tofl={true}
-          height="50px"
-          width="50px">
-          <MyImage
-            style={{height: 60, width: 60}}
-            source={require('../../assects/tablenav.png')}
-          />
-        </CustView>
-        <CustView marT={-100} touchable tofl={true} height="50px" width="50px">
-          <MyImage
-            style={{height: 70, width: 70}}
-            source={require('../../assects/homenav.png')}
-          />
-        </CustView>
-        <CustView
-          onpress={() => {
-            navigation.navigate('profile');
-          }}
-          marR={25}
-          marT={5}
-          touchable
-          tofl={true}
-          height="50px"
-          width="50px">
-          <MyImage
-            style={{height: 60, width: 60}}
-            source={require('../../assects/profilenav.png')}
-          />
-        </CustView>
-      </ImageBackground>
+        touchable
+        tofl={true}>
+        <MyImage
+          style={{height: 70, width: 70}}
+          source={require('../../assects/table.png')}
+        />
+      </CustView>
+      <CustView
+        onpress={() => {
+          navigation.navigate('profile');
+        }}
+        touchable
+        tofl={true}>
+        <MyImage
+          style={{height: 70, width: 70}}
+          source={require('../../assects/account.png')}
+        />
+      </CustView>
     </CustView>
   );
 };

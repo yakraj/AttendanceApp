@@ -1,6 +1,6 @@
 import {Topbar} from '../components/topbar';
 import React, {useContext, useEffect, useState} from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, RefreshControl} from 'react-native';
 import {CustView} from '../components/devider';
 import CusT from '../components/custom.text';
 import {MainContext} from '../services/main.context';
@@ -36,17 +36,19 @@ const TableContent = ({text, width, height, title}: tableCtype) => {
 export const Table = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const {tableData, CurMOD, userData, ActiveUser} = useContext(MainContext);
+  const {tableData, CurMOD, userData, ActiveUser, onTableData} =
+    useContext(MainContext);
   const {year, month, userId}: {year: number; month: string; userId: string} =
     route.params;
-  const [TableData, onTableData] = useState<any>([]);
+  const [TableData, onTableDataa] = useState<any>([]);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const FindCorrect = () => {
     let getYearData = tableData.filter((x: any) => x.year === year);
     if (getYearData.length) {
       let getMonthData = getYearData[0].months[month];
       let FindUserData = getMonthData.filter((x: any) => x.userId === userId);
-      onTableData(FindUserData);
+      onTableDataa(FindUserData);
     }
   };
 
@@ -58,6 +60,24 @@ export const Table = () => {
       FindCorrect();
     }, [ActiveUser, tableData]),
   );
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const handleRefresh = () => {
+    console.log('refreshing');
+    setRefreshing(true);
+    fetchData();
+  };
+
+  const fetchData = () => {
+    // Simulating data fetching from an API
+    setTimeout(() => {
+      let tempdata = [...tableData];
+      onTableData(tempdata);
+      setRefreshing(false);
+    }, 2000);
+  };
 
   const ExportPdf = {
     table: TableData,
@@ -95,6 +115,9 @@ export const Table = () => {
         <FlatList
           data={TableData}
           renderItem={renderItem}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
           keyExtractor={item => item.day}
         />
       ) : (
