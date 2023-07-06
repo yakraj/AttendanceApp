@@ -46,7 +46,7 @@ export const DutyTime = ({id}: dutydatatype) => {
 
   const [PrevData, onPrevData] = useState();
   const [DefaultTime, onDefaultTime] = useState(new Date());
-
+  const [DType, setDType] = useState('regular');
   // this will update my work
   const [updaTer, onupdaTer] = useState();
 
@@ -169,6 +169,7 @@ export const DutyTime = ({id}: dutydatatype) => {
       leaveTime: Number(passHours),
       totalHours: TimeDifference(),
       remarks: Remarks ? Remarks : 'Present',
+      dtype: DType,
       userId: currentUser.userId,
       uniqId: currMonth + generateRandomString(5),
     };
@@ -432,6 +433,47 @@ export const DutyTime = ({id}: dutydatatype) => {
                     </CustView>
                   </CustView>
 
+                  <CustView
+                    fdr="row"
+                    width="100%"
+                    padL={10}
+                    padR={10}
+                    marB={10}
+                    jus="space-between">
+                    <CusT size="20" weight="bold">
+                      Duty Type
+                    </CusT>
+                    {/* this is container for regular and ot */}
+                    <CustView fdr="row">
+                      <CustView
+                        touchable
+                        tblC="blue"
+                        onpress={() => {
+                          setDType('regular');
+                        }}
+                        bcC={DType === 'regular' ? 'green' : 'grey'}
+                        marR={5}
+                        padd={10}
+                        borR={10}>
+                        <CusT color="#fff" weight="bold" letterSpacing="2">
+                          Regular
+                        </CusT>
+                      </CustView>
+                      <CustView
+                        touchable
+                        tblC="blue"
+                        onpress={() => {
+                          setDType('ot');
+                        }}
+                        bcC={DType === 'ot' ? 'green' : 'grey'}
+                        padd={10}
+                        borR={10}>
+                        <CusT color="#fff" weight="bold" letterSpacing="2">
+                          OT
+                        </CusT>
+                      </CustView>
+                    </CustView>
+                  </CustView>
                   <CustView
                     onpress={() => {
                       UpdateData();

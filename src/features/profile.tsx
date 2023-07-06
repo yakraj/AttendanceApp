@@ -100,7 +100,10 @@ const OtherUser = ({name, pf, userId, salph, esic, exCharge}: daataa) => {
         );
       }}
       touchable
-      onpress={() => ChangeUser(userId)}>
+      onpress={() => {
+        ChangeUser(userId);
+        navigation.navigate('Home');
+      }}>
       <ImageBackground
         style={{width: 200, height: 200, justifyContent: 'space-around'}}
         source={require('../../assects/otheruser.png')}>
@@ -193,7 +196,7 @@ export const Profile = () => {
               source={require('../../assects/avatar.png')}
             />
             <CusT size={30} weight="bold" color="grey">
-              {User[0] && User[0].name.substring(0, 7)}
+              {User[0] && User[0].name.split(' ')[0]}
             </CusT>
           </CustView>
         </ImageBackground>

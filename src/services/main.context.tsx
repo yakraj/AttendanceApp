@@ -28,6 +28,7 @@ export const MainProvider = ({children}) => {
   const [ActiveUser, setActiveUser] = useState<string>();
   const [CurMOD, setCurMOD] = useState<string>([]);
 
+  //
   // this is for add new user
   const [Name, setName] = useState<string>('');
   const [Salph, setSalph] = useState<number>(0);
@@ -97,6 +98,7 @@ export const MainProvider = ({children}) => {
         totalHours: 0,
         remarks: '-',
         userId: userName,
+        dtype: 'regular',
         uniqId: currMonth + String(i + 1) + generateRandomString(5),
       };
       Data.push(dayData);
@@ -150,26 +152,9 @@ export const MainProvider = ({children}) => {
         return acc + curr.totalHours;
       }, 0) * finduer[0].salph;
 
-    let salary =
-      findUsersData.reduce((acc, curr) => {
-        return acc + curr.totalHours;
-      }, 0) *
-        finduer[0].salph -
-      (findUsersData.filter(day => day.totalHours >= 8).length *
-        8 *
-        finduer[0].salph *
-        finduer[0].pf) /
-        100 -
-      (finduer[0].esic
-        ? findUsersData.filter(day => day.totalHours >= 8).length *
-          8 *
-          finduer[0].salph *
-          0.0075
-        : 0) -
-      finduer[0].exCharge;
-
     let epf =
-      (findUsersData.filter(day => day.totalHours >= 8).length *
+      (findUsersData.filter(day => day.totalHours >= 8 && day.dtype !== 'ot')
+        .length *
         8 *
         finduer[0].salph *
         finduer[0].pf) /
@@ -177,11 +162,20 @@ export const MainProvider = ({children}) => {
     // return salary;
     // it will return the esic
     let esicc =
-      findUsersData.filter(day => day.totalHours >= 8).length *
+      findUsersData.filter(day => day.totalHours >= 8 && day.dtype !== 'ot')
+        .length *
       8 *
       finduer[0].salph *
       0.0075;
 
+    let salary =
+      findUsersData.reduce((acc, curr) => {
+        return acc + curr.totalHours;
+      }, 0) *
+        finduer[0].salph -
+      epf -
+      esicc -
+      finduer[0].exCharge;
     return {
       withoutsalary: withoutsalary.toFixed(2),
       salary: salary.toFixed(2),
@@ -501,6 +495,7 @@ export const MainProvider = ({children}) => {
                         totalHours: 0,
                         remarks: '-',
                         userId: user,
+                        dtype: 'regular',
                         uniqId: yesterdayMonth + generateRandomString(5),
                       });
                     }
@@ -508,7 +503,7 @@ export const MainProvider = ({children}) => {
 
                   // findTargetObject.months[currMonth] = filledMonths;
                   TempMonthData = [...TempMonthData, ...filledMonths];
-                  console.log(tempMonth, filledMonths);
+
                   onTableData(tempTable);
                   return;
                 }
@@ -541,9 +536,9 @@ export const MainProvider = ({children}) => {
     checkTabledata();
   }, []);
 
-  useEffect(() => {
-    console.log('changed');
-  }, [tableData]);
+  // useEffect(() => {
+  //   console.log('changed');
+  // }, [tableData]);
 
   useEffect(() => {
     ReadActiveUser();

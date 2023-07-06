@@ -106,8 +106,8 @@ export const Topbar = ({title, isTable, route, pdf}: Props) => {
     // find Ot salary
     let otSalary = OThours * user[0].salph;
     // find sum salary
-    let sumSalary =
-      basicSalary + otSalary - basicSalary * 0.0075 - user[0].exCharge - PF;
+    let esic = user[0].esic ? basicSalary * 0.0075 : 0;
+    let sumSalary = basicSalary + otSalary - esic - user[0].exCharge - PF;
 
     let options = {
       html: ` 
@@ -149,241 +149,50 @@ export const Topbar = ({title, isTable, route, pdf}: Props) => {
         box-sizing: border-box;
       "
     > 
-      <div
-        id="id1683720844070"
-        style="
-          height: 63px;
-          width: 100%;
-          position: relative;
-          box-sizing: border-box;
-          display: flex;
-          margin-top: 30px;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-          background: rgb(255, 255, 255);
-        "
-      >
-        <h1 style="margin: 0px; font-size: 2rem; text-transform: uppercase;">
-          ${user[0].company}
-        </h1>
-        <h1 style="margin: 0px; font-weight: normal; font-size: 1.3rem;">
-          ${
-            currYear.toString().toUpperCase() +
-            ' ' +
-            currMonth.toString().toUpperCase()
-          } month salary details
-        </h1>
-      </div>
-      <div
-        id="id1683721076710"
-        style="
-          height: auto;
-          width: 100%;
-          position: relative;
-          box-sizing: border-box;
-          display: flex;
-          border-bottom: 2px solid grey;
-          margin-top: 30px;
-        "
-      >
-        <div
-          id="id1683721110199"
-          style="
-            height: auto;
-            width: 45%;
-            position: relative;
-            box-sizing: border-box;
-            display: flex;
-            border-top: none;
-            border-right: 2px solid grey;
-            border-bottom: none;
-            border-left: none;
-            border-image: initial;
-          "
-        >
-          <p style="margin: 0px; font-weight: bold; ">Employee Name :</p>
-          <p
-            style="margin: 0px 0px 0px 10px; font-weight: normal; height: auto; text-transform: capitalize;"
-          >
-          ${user[0].name}
-          </p>
-        </div>
-        <div
-          id="id1683721110199"
-          style="
-            height: auto;
-            width: 25%;
-            position: relative;
-            box-sizing: border-box;
-            display: flex;
-            border-right: 2px solid grey;
-            justify-content: center;
-          "
-        >
-          <p style="margin: 0px; font-weight: bold;">PF :</p>
-          <p
-            style="margin: 0px 0px 0px 10px; font-weight: normal; height: auto;"
-          >
-            Rs. ${PF}
-          </p>
-        </div>
-        <div
-          id="id1683721110199"
-          style="
-            height: auto;
-            width: 25%;
-            position: relative;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: center;
-          "
-        >
-          <p style="margin: 0px; font-weight: bold;">Working Hours:</p>
-          <p
-            style="margin: 0px 0px 0px 10px; font-weight: normal; height: auto;"
-          >
-            ${sumhours}
-          </p>
-        </div>
-      </div>
-      <div
-        id="id1683721076710"
-        style="
-          height: auto;
-          width: 100%;
-          position: relative;
-          box-sizing: border-box;
-          margin-top: 10px;
-          display: flex;
-          border-bottom: 2px solid grey;
-        "
-      >
-        <div
-          id="id1683721110199"
-          style="
-            height: auto;
-            width: 33%;
-            position: relative;
-            box-sizing: border-box;
-            display: flex;
-            border-right: 2px solid grey;
-          "
-        >
-          <p style="margin: 0px; font-weight: bold;">Working Days :</p>
-          <p
-            style="margin: 0px 0px 0px 10px; font-weight: normal; height: auto;"
-          >
-            ${BasicWorkDays}
-          </p>
-        </div>
-        <div
-          id="id1683721110199"
-          style="
-            height: auto;
-            width: 33%;
-            position: relative;
-            box-sizing: border-box;
-            display: flex;
-            border-right: 2px solid grey;
-            justify-content: center;
-          "
-        >
-          <p style="margin: 0px; font-weight: bold;">Over Time :</p>
-          <p
-            style="margin: 0px 0px 0px 10px; font-weight: normal; height: auto;"
-          >
-            ${OThours}
-          </p>
-        </div>
-        <div
-          id="id1683721110199"
-          style="
-            height: auto;
-            width: 33%;
-            position: relative;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: center;
-          "
-        >
-          <p style="margin: 0px; font-weight: bold;">Gate Pass Time (hr) :</p>
-          <p
-            style="margin: 0px 0px 0px 10px; font-weight: normal; height: auto;"
-          >
-            ${gatePass}
-          </p>
-        </div>
-      </div>
-      <div
-        id="id1683721076710"
-        style="
-          height: auto;
-          width: 100%;
-          position: relative;
-          box-sizing: border-box;
-          margin-top: 10px;
-          display: flex;
-          border-bottom: 2px solid grey;
-        "
-      >
-        <div
-          id="id1683721110199"
-          style="
-            height: auto;
-            width: 50%;
-            position: relative;
-            box-sizing: border-box;
-            display: flex;
-            border-right: 2px solid grey;
-          "
-        >
-          <p style="margin: 0px; font-weight: bold;">Basic Salary :</p>
-          <p
-            style="margin: 0px 0px 0px 10px; font-weight: normal; height: auto;"
-          >
-            Rs. ${basicSalary}
-          </p>
-        </div>
-        <div
-          id="id1683721110199"
-          style="
-            height: auto;
-            width: 50%;
-            position: relative;
-            border-right: 2px solid grey;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: center;
-          "
-        >
-          <p style="margin: 0px; font-weight: bold;">OT Amount :</p>
-          <p
-            style="margin: 0px 0px 0px 10px; font-weight: normal; height: auto;"
-          >
-            Rs. ${otSalary}
-          </p>
-        </div>
-        <div
-          id="id1683721110199"
-          style="
-            height: auto;
-            width: 50%;
-  
-            position: relative;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: center;
-          "
-        >
-          <p style="margin: 0px; font-weight: bold;">Total (incl) :</p>
-          <p
-            style="margin: 0px 0px 0px 10px; font-weight: normal; height: auto;"
-          >
-            Rs. ${sumSalary.toString().substring(0, 8)}
-          </p>
-        </div>
-      </div>
+      
+    
+    
+<table class="tg" style="border-collapse: collapse;border-spacing: 0;">
+<thead>
+  <tr>
+    <th class="tg-mj3y" colspan="3" style="border-color: black;border-style: solid;border-width: 1px;font-family: Arial, sans-serif;font-size: 100%;font-weight: normal;overflow: hidden;padding: 10px 5px;word-break: normal;background-color: #c0c0c0;text-align: left;vertical-align: top;"><span style="font-weight:bold; font-size: 1.5rem; text-transform: uppercase"> ${
+      user[0].company
+    }</span>  <span style="font-style:italic">Payment Details for the month  
+    ${title.toUpperCase()}
+    </span></th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0lax" style="border-color: black;border-style: solid;border-width: 1px;font-family: Arial, sans-serif;font-size: 14px;overflow: hidden;padding: 10px 5px;word-break: normal;text-align: left;vertical-align: top;"><span style="font-weight:bold">Employee Name: </span> ${
+      user[0].name
+    }</td>
+    <td class="tg-0lax" style="border-color: black;border-style: solid;border-width: 1px;font-family: Arial, sans-serif;font-size: 14px;overflow: hidden;padding: 10px 5px;word-break: normal;text-align: left;vertical-align: top;"><span style="font-weight:bold">Basic : </span>${basicSalary}</td>
+    <td class="tg-0lax" style="border-color: black;border-style: solid;border-width: 1px;font-family: Arial, sans-serif;font-size: 14px;overflow: hidden;padding: 10px 5px;word-break: normal;text-align: left;vertical-align: top;"><span style="font-weight:bold">ESIC (0.075%) :</span> ${esic}</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax" style="border-color: black;border-style: solid;border-width: 1px;font-family: Arial, sans-serif;font-size: 14px;overflow: hidden;padding: 10px 5px;word-break: normal;text-align: left;vertical-align: top;"><span style="font-weight:bold">O.T Amount:</span> ${otSalary}</td>
+    <td class="tg-0lax" style="border-color: black;border-style: solid;border-width: 1px;font-family: Arial, sans-serif;font-size: 14px;overflow: hidden;padding: 10px 5px;word-break: normal;text-align: left;vertical-align: top;"><span style="font-weight:bold">Present  days:</span>   ${BasicWorkDays}</td>
+    <td class="tg-0lax" style="border-color: black;border-style: solid;border-width: 1px;font-family: Arial, sans-serif;font-size: 14px;overflow: hidden;padding: 10px 5px;word-break: normal;text-align: left;vertical-align: top;"><span style="font-weight:bold">PF (12%) :</span>${PF} </td>
+  </tr>
+  <tr>
+    <td class="tg-0lax" style="border-color: black;border-style: solid;border-width: 1px;font-family: Arial, sans-serif;font-size: 14px;overflow: hidden;padding: 10px 5px;word-break: normal;text-align: left;vertical-align: top;"><span style="font-weight:bold">O.T Hours :</span>  ${OThours}</td>
+    <td class="tg-0lax" style="border-color: black;border-style: solid;border-width: 1px;font-family: Arial, sans-serif;font-size: 14px;overflow: hidden;padding: 10px 5px;word-break: normal;text-align: left;vertical-align: top;"><span style="font-weight:bold">Gate Pass (hrs.) :</span> ${gatePass}</td>
+    <td class="tg-0lax" style="border-color: black;border-style: solid;border-width: 1px;font-family: Arial, sans-serif;font-size: 14px;overflow: hidden;padding: 10px 5px;word-break: normal;text-align: left;vertical-align: top;"><span style="font-weight:bold">IOU :</span> ${
+      user[0].exCharge
+    }</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax" colspan="2" style="border-color: black;border-style: solid;border-width: 1px;font-family: Arial, sans-serif;font-size: 14px;overflow: hidden;padding: 10px 5px;word-break: normal;text-align: left;vertical-align: top;"><span style="font-weight:bold">Total Payable Amount :</span> ${sumSalary
+      .toString()
+      .substring(0, 8)}</td>
+    <td class="tg-0lax" style="border-color: black;border-style: solid;border-width: 1px;font-family: Arial, sans-serif;font-size: 14px;overflow: hidden;padding: 10px 5px;word-break: normal;text-align: left;vertical-align: top;"><span style="font-weight:bold">Tot.deduction :</span> ${
+      esic + user[0].exCharge + PF
+    }</td>
+  </tr>
+</tbody>
+</table>
+
       <div
         id="id1683722024862"
         style="

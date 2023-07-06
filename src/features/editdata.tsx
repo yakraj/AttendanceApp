@@ -28,6 +28,7 @@ export const EditData = () => {
   const [activeStart, onactiveStart] = useState(true);
   const {id} = route.params;
   const [PrevData, onPrevData] = useState();
+  const [DType, setDType] = useState('regular');
   const [DefaultTime, onDefaultTime] = useState(new Date());
 
   const showTimePicker = (time: string) => {
@@ -82,6 +83,10 @@ export const EditData = () => {
       onoverTime(PrevData.overTime);
       onpassHours(PrevData.leaveTime);
       onRemarks(PrevData.remarks);
+      onRemarks(PrevData.remarks);
+      if (PrevData.dtype) {
+        setDType(PrevData.dtype);
+      }
     }
   }, [PrevData]);
 
@@ -165,6 +170,7 @@ export const EditData = () => {
           targetObj.leaveTime = Number(passHours);
           targetObj.totalHours = TimeDifference();
           targetObj.remarks = Remarks;
+          targetObj.dtype = DType;
           break;
         }
       }
@@ -189,7 +195,7 @@ export const EditData = () => {
           sadR={5}
           TC="pink"
           marB={20}
-          height={windowHeight * 0.4}
+          height={windowHeight * 0.45}
           width={windowWidth * 0.8}>
           <CustView borR={20} height="100%" width="100%">
             <LinearGradient
@@ -368,6 +374,48 @@ export const EditData = () => {
                       borderRadius: 10,
                     }}
                   />
+                </CustView>
+              </CustView>
+
+              <CustView
+                fdr="row"
+                width="100%"
+                padL={10}
+                padR={10}
+                marB={10}
+                jus="space-between">
+                <CusT size="20" weight="bold">
+                  Duty Type
+                </CusT>
+                {/* this is container for regular and ot */}
+                <CustView fdr="row">
+                  <CustView
+                    touchable
+                    tblC="blue"
+                    onpress={() => {
+                      setDType('regular');
+                    }}
+                    bcC={DType === 'regular' ? 'green' : 'grey'}
+                    marR={5}
+                    padd={10}
+                    borR={10}>
+                    <CusT color="#fff" weight="bold" letterSpacing="2">
+                      Regular
+                    </CusT>
+                  </CustView>
+                  <CustView
+                    touchable
+                    tblC="blue"
+                    onpress={() => {
+                      setDType('ot');
+                    }}
+                    bcC={DType === 'ot' ? 'green' : 'grey'}
+                    padd={10}
+                    borR={10}>
+                    <CusT color="#fff" weight="bold" letterSpacing="2">
+                      OT
+                    </CusT>
+                  </CustView>
                 </CustView>
               </CustView>
 

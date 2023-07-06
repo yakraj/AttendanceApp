@@ -191,11 +191,16 @@ function App({navigation}): JSX.Element {
     React.useCallback(() => {
       if (tableData.length) {
         let findyear = tableData.find(x => x.year == currYear);
+        let findMonth = findyear.months[currMonth];
 
-        let findToday = findyear.months[currMonth].some(
-          x => x.day === currDay && x.userId === ActiveUser,
-        );
-        setTodayExist(findToday);
+        let findToday;
+
+        if (findMonth) {
+          findToday = findMonth.some(
+            x => x.day === currDay && x.userId === ActiveUser,
+          );
+          setTodayExist(findToday);
+        }
       }
     }, [tableData, ActiveUser]),
   );
@@ -268,7 +273,7 @@ function App({navigation}): JSX.Element {
             source={require('./assects/avatar.png')}
           />
           <CusT size={30} weight="bold" color="#fff">
-            {User[0] && User[0].name.substring(0, 6)}
+            {User[0] && User[0].name.split(' ')[0]}
           </CusT>
         </CustView>
       </CustView>

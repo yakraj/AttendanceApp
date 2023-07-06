@@ -49,7 +49,7 @@ export const Retrieve = () => {
               source={require('../../assects/avatar.png')}
             />
             <CusT size={30} weight="bold" color="#fff">
-              {User[0] && User[0].name.substring(0, 6)}
+              {User[0] && User[0].name.split(' ')[0]}
             </CusT>
           </CustView>
         </CustView>
